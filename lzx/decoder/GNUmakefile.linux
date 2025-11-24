@@ -1,0 +1,45 @@
+TARGETNAME=ldi
+TARGETPATH=../../lib
+TARGETTYPE=LIBRARY
+CC = gcc
+AR = ar
+RANLIB = ranlib
+CFLAGS = -DUSE_NOLIBS=1 -D__APPLE__=1 -O2 -I../../inc
+LDFLAGS = -shared
+RM = rm -f
+INSTALL = install -m 755
+INSTALL_DIR = /usr
+
+OBJS = \
+    decverb.o \
+    decalign.o \
+    maketbl.o \
+    dectree.o \
+    decxlat.o \
+    decin.o \
+    decuncmp.o \
+    decblk.o \
+    decout.o \
+    decinit.o \
+    decapi.o \
+    ldi.o
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+all: lib$(TARGETNAME).so lib$(TARGETNAME).a
+
+lib$(TARGETNAME).so: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+lib$(TARGETNAME).a: $(OBJS)
+	$(AR) cru $@ $^
+	$(RANLIB) $@
+
+clean:
+	$(RM) $(OBJS) $(TARGETNAME).dylib lib$(TARGETNAME).a
+
+install:
+	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h
+	$(INSTALL) lib$(TARGETNAME).so $(INSTALL_DIR)/lib/lib$(TARGETNAME).so
+	$(INSTALL) lib$(TARGETNAME).a $(INSTALL_DIR)/lib/lib$(TARGETNAME).a

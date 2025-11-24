@@ -1,0 +1,45 @@
+TARGETNAME=ldi
+TARGETPATH=../../lib
+TARGETTYPE=LIBRARY
+CC = gcc
+AR = ar
+RANLIB = ranlib
+CFLAGS = -DMULTIPLE_SEARCH_TREES=1 -D__APPLE__=1 -O2 -I../../inc
+LDFLAGS = -shared
+RM = rm -f
+INSTALL = install -m 755
+INSTALL_DIR = /usr
+
+OBJS = \
+    bsearch.o \
+    optenc.o \
+    encstats.o \
+    tree.o \
+    encdata.o \
+    enctree.o \
+    block.o \
+    blkinit.o \
+    io.o \
+    lci.o \
+    init.o \
+    encapi.o
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+all: lib$(TARGETNAME).so lib$(TARGETNAME).a
+
+lib$(TARGETNAME).so: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+lib$(TARGETNAME).a: $(OBJS)
+	$(AR) cru $@ $^
+	$(RANLIB) $@
+
+clean:
+	$(RM) $(OBJS) lib$(TARGETNAME).dylib lib$(TARGETNAME).a
+
+install:
+	$(INSTALL) ../../inc/lci.h $(INSTALL_DIR)/include/lci.h
+	$(INSTALL) lib$(TARGETNAME).so $(INSTALL_DIR)/lib/lib$(TARGETNAME).so
+	$(INSTALL) lib$(TARGETNAME).a $(INSTALL_DIR)/lib/lib$(TARGETNAME).a

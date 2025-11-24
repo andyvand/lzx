@@ -1,0 +1,45 @@
+TARGETNAME=ldi
+TARGETPATH=../../lib
+TARGETTYPE=LIBRARY
+CC = clang
+AR = ar
+RANLIB = ranlib
+CFLAGS = -DUSE_NOLIBS=1 -O2 -I../../inc -arch x86_64 -arch arm64
+LDFLAGS = -dynamiclib -arch x86_64 -arch arm64
+RM = rm -f
+INSTALL = install -m 755
+INSTALL_DIR = /usr/local
+
+OBJS = \
+    decverb.o \
+    decalign.o \
+    maketbl.o \
+    dectree.o \
+    decxlat.o \
+    decin.o \
+    decuncmp.o \
+    decblk.o \
+    decout.o \
+    decinit.o \
+    decapi.o \
+    ldi.o
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+all: lib$(TARGETNAME).dylib lib$(TARGETNAME).a
+
+lib$(TARGETNAME).dylib: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+lib$(TARGETNAME).a: $(OBJS)
+	$(AR) cru $@ $^
+	$(RANLIB) $@
+
+clean:
+	$(RM) $(OBJS) $(TARGETNAME).dylib lib$(TARGETNAME).a
+
+install:
+	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h
+	$(INSTALL) lib$(TARGETNAME).dylib $(INSTALL_DIR)/lib/lib$(TARGETNAME).dylib
+	$(INSTALL) lib$(TARGETNAME).a $(INSTALL_DIR)/lib/lib$(TARGETNAME).a
