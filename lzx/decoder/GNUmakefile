@@ -2,6 +2,7 @@ TARGETNAME=ldi
 TARGETPATH=../../lib
 TARGETTYPE=LIBRARY
 CC = i686-pc-mingw32-gcc
+DLLWRAP = i686-pc-mingw32-dllwrap
 AR = i686-pc-mingw32-ar
 RANLIB = i686-pc-mingw32-ranlib
 CFLAGS = -DUSE_NOLIBS=1 -O2 -I../../inc
@@ -29,16 +30,17 @@ OBJS = \
 all: $(TARGETNAME).dll lib$(TARGETNAME).a
 
 $(TARGETNAME).dll: $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(DLLWRAP) --output-def $(TARGETNAME).def --implib lib$(TARGETNAME).dll.a -o $@ $^
 
 lib$(TARGETNAME).a: $(OBJS)
 	$(AR) cru $@ $^
 	$(RANLIB) $@
 
 clean:
-	$(RM) $(OBJS) $(TARGETNAME).dll lib$(TARGETNAME).a
+	$(RM) $(OBJS) $(TARGETNAME).dll $(TARGETNAME).def lib$(TARGETNAME).dll.a lib$(TARGETNAME).a
 
 install:
 	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h
 	$(INSTALL) $(TARGETNAME).dll $(INSTALL_DIR)/lib/$(TARGETNAME).dll
 	$(INSTALL) lib$(TARGETNAME).a $(INSTALL_DIR)/lib/lib$(TARGETNAME).a
+	$(INSTALL) lib$(TARGETNAME).dll.a $(INSTALL_DIR)/lib/lib$(TARGETNAME).dll.a
