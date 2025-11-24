@@ -25,7 +25,7 @@
 #ifndef __LDI_H__
 #define __LDI_H__
 
-#ifdef __APPLE__
+#if defined(__GNUC__) && !defined(__MINGW32__)
 #include <stdint.h>
 #include <sys/types.h>
 #else
@@ -33,7 +33,7 @@
 #endif
 
 #ifndef DIAMONDAPI
-#ifdef __APPLE__
+#if defined(__GNUC__) && !defined(__MINGW32__)
 #define DIAMONDAPI
 #else
 #define DIAMONDAPI __cdecl

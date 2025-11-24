@@ -27,7 +27,7 @@
 #define __LCI_H__
 
 #ifndef DIAMONDAPI
-#ifdef __APPLE__
+#if defined(__GNUC__) && !defined(__MINGW32__)
 #define DIAMONDAPI
 #else
 #define DIAMONDAPI __cdecl
