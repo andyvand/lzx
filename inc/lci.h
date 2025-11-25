@@ -101,7 +101,7 @@ typedef MHANDLE LCI_CONTEXT_HANDLE;      /* hmc */
  */
 #ifndef _PFNALLOC_DEFINED
 #define _PFNALLOC_DEFINED
-typedef MI_MEMORY (FAR DIAMONDAPI *PFNALLOC)(ULONG cb);       /* pfnma */
+typedef MI_MEMORY (FAR DIAMONDAPI *PFNALLOC)(UINT cb);       /* pfnma */
 #endif
 
 
