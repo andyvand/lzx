@@ -6,13 +6,13 @@
 #include "decoder.h"
 
 
-int decode_uncompressed_block(t_decoder_context *context, long bufpos, int amount_to_decode)
+int decode_uncompressed_block(t_decoder_context *context, int bufpos, int amount_to_decode)
 {
-	long	bytes_decoded = 0;
-	long	bufpos_end;
-	long	decode_residue;
-    ulong   bufpos_start;
-    ulong   end_copy_pos;
+	int	bytes_decoded = 0;
+	int	bufpos_end;
+	int	decode_residue;
+    uint   bufpos_start;
+    uint   end_copy_pos;
     byte *  p;
 
     bufpos_start = bufpos;
@@ -78,10 +78,10 @@ bool handle_beginning_of_uncompressed_block(t_decoder_context *context)
     for (i = 0; i < NUM_REPEATED_OFFSETS; i++)
     {
         context->dec_last_matchpos_offset[i] =
-            ((ulong) *(  (byte *) context->dec_input_curpos)    )        |
-            ((ulong) *( ((byte *) context->dec_input_curpos) + 1) << 8)  |
-            ((ulong) *( ((byte *) context->dec_input_curpos) + 2) << 16) |
-            ((ulong) *( ((byte *) context->dec_input_curpos) + 3) << 24);
+            ((uint) *(  (byte *) context->dec_input_curpos)    )        |
+            ((uint) *( ((byte *) context->dec_input_curpos) + 1) << 8)  |
+            ((uint) *( ((byte *) context->dec_input_curpos) + 2) << 16) |
+            ((uint) *( ((byte *) context->dec_input_curpos) + 3) << 24);
 
         context->dec_input_curpos += 4; /* increment by 4 bytes */
     }

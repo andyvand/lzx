@@ -20,7 +20,7 @@
 
 #define MAX_GROWTH    6144  /* see encoder.h */
 
-typedef ULONG SIGNATURE;    /* structure signature */
+typedef UINT SIGNATURE;    /* structure signature */
 
 struct LDI_CONTEXT          /* private structure */
 {
@@ -58,7 +58,7 @@ typedef struct LDI_CONTEXT FAR *PMDC_CONTEXT;     /* a pointer to one */
 
 /* --- LDI context structure ---------------------------------------------- */
 
-#define PMDCfromHMD(h) ((PMDC_CONTEXT)(h))          /* handle to pointer */
+#define PMDCfromHMD(h) ((PMDC_CONTEXT)h)          /* handle to pointer */
 #define HMDfromPMDC(p) ((LDI_CONTEXT_HANDLE)(p))    /* pointer to handle */
 
 /* --- LDICreateDecompression() ------------------------------------------- */
@@ -150,8 +150,8 @@ int FAR DIAMONDAPI LDIDecompress(
 {
     PMDC_CONTEXT	context;                   /* pointer to the context */
     int				result;                             /* return code */
-	long			bytes_to_decode;
-	long			total_bytes_written = 0;
+	int 			bytes_to_decode;
+	int 			total_bytes_written = 0;
 
     context = PMDCfromHMD(hmd);             /* get pointer from handle */
 
@@ -170,7 +170,7 @@ int FAR DIAMONDAPI LDIDecompress(
 		return MDI_ERROR_NO_ERROR;
 #endif
 
-	bytes_to_decode = (long) *pcbResult;
+	bytes_to_decode = (int) *pcbResult;
 
 	result = LZX_Decode(
 		context->decoder_context,
@@ -186,8 +186,8 @@ int FAR DIAMONDAPI LDIDecompress(
 
 	if (result)
 		return MDI_ERROR_FAILED;
-	else
-		return MDI_ERROR_NO_ERROR;
+
+    return MDI_ERROR_NO_ERROR;
 }
 
 /* --- LDIResetDecompression() -------------------------------------------- */
@@ -236,9 +236,9 @@ int FAR DIAMONDAPI LDIDestroyDecompression(LDI_CONTEXT_HANDLE hmd)
 int FAR DIAMONDAPI LDIGetWindow(
         LDI_CONTEXT_HANDLE  hmd,            /* decompression context */
         BYTE FAR **         ppWindow,       /* pointer to window start */
-        long *              pFileOffset,    /* offset in folder */
-        long *              pWindowOffset,  /* offset in window */
-        long *              pcbBytesAvail)   /* bytes avail from window start */
+        int *              pFileOffset,    /* offset in folder */
+        int *              pWindowOffset,  /* offset in window */
+        int *              pcbBytesAvail)   /* bytes avail from window start */
 {
     PMDC_CONTEXT context;                   
     t_decoder_context *dec_context;
@@ -250,7 +250,7 @@ int FAR DIAMONDAPI LDIGetWindow(
 
     // window is a circular buffer
 
-    if ((ulong) dec_context->dec_position_at_start < dec_context->dec_window_size)
+    if ((uint) dec_context->dec_position_at_start < dec_context->dec_window_size)
     {
         *pWindowOffset = 0; 
         *pFileOffset = 0;

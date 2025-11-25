@@ -38,8 +38,8 @@ typedef unsigned long	ULONG;
 typedef unsigned int    UINT;
 
 #ifdef __APPLE__
-typedef int *           INT_PTR;
-typedef unsigned int *  UINT_PTR;
+typedef long            INT_PTR;
+typedef unsigned long   UINT_PTR;
 #endif
 
 #ifdef BIT16
@@ -82,8 +82,8 @@ typedef unsigned int *  UINT_PTR;
 #   endif
 #endif
 
-typedef void HUGE * (FAR DIAMONDAPI *PFNALLOC)(ULONG cb); /* pfna */
-#define FNALLOC(fn) void HUGE * FAR DIAMONDAPI fn(ULONG cb)
+typedef void HUGE * (FAR DIAMONDAPI *PFNALLOC)(UINT cb); /* pfna */
+#define FNALLOC(fn) void HUGE * FAR DIAMONDAPI fn(UINT cb)
 
 typedef void (FAR DIAMONDAPI *PFNFREE)(void HUGE *pv); /* pfnf */
 #define FNFREE(fn) void FAR DIAMONDAPI fn(void HUGE *pv)
@@ -92,6 +92,6 @@ typedef INT_PTR (FAR DIAMONDAPI *PFNOPEN) (char FAR *pszFile,int oflag,int pmode
 typedef UINT (FAR DIAMONDAPI *PFNREAD) (INT_PTR hf, void FAR *pv, UINT cb);
 typedef UINT (FAR DIAMONDAPI *PFNWRITE)(INT_PTR hf, void FAR *pv, UINT cb);
 typedef int  (FAR DIAMONDAPI *PFNCLOSE)(INT_PTR hf);
-typedef long (FAR DIAMONDAPI *PFNSEEK) (INT_PTR hf, long dist, int seektype);
+typedef int (FAR DIAMONDAPI *PFNSEEK) (INT_PTR hf, int dist, int seektype);
 
 #endif /* _TYPEDEFS_H */

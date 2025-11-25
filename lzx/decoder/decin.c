@@ -20,14 +20,14 @@ void NEAR initialise_decoder_bitbuf(t_decoder_context *context)
     if (context->dec_block_type == BLOCKTYPE_UNCOMPRESSED)
         return;
 
-    if ((context->dec_input_curpos + sizeof(ulong)) > context->dec_end_input_pos)
+    if ((context->dec_input_curpos + sizeof(uint)) > context->dec_end_input_pos)
         return;
 
     p = context->dec_input_curpos;
 
 	context->dec_bitbuf =
-        ((ulong) p[2] | (((ulong) p[3]) << 8)) |
-        ((((ulong) p[0] | (((ulong) p[1]) << 8))) << 16);
+        ((uint) p[2] | (((uint) p[3]) << 8)) |
+        ((((uint) p[0] | (((uint) p[1]) << 8))) << 16);
 
 	context->dec_bitcount = 16;
     context->dec_input_curpos += 4;
@@ -56,7 +56,7 @@ void NEAR fillbuf(t_decoder_context *context, int n)
             return;
         }
 
-        context->dec_bitbuf |= ((((ulong) *context->dec_input_curpos | (((ulong) *(context->dec_input_curpos+1)) << 8))) << (-context->dec_bitcount));
+        context->dec_bitbuf |= ((((uint) *context->dec_input_curpos | (((uint) *(context->dec_input_curpos+1)) << 8))) << (-context->dec_bitcount));
         context->dec_input_curpos += 2;
         context->dec_bitcount += 16;
 
@@ -68,7 +68,7 @@ void NEAR fillbuf(t_decoder_context *context, int n)
                 return;
             }
 
-            context->dec_bitbuf |= ((((ulong) *context->dec_input_curpos | (((ulong) *(context->dec_input_curpos+1)) << 8))) << (-context->dec_bitcount));
+            context->dec_bitbuf |= ((((uint) *context->dec_input_curpos | (((uint) *(context->dec_input_curpos+1)) << 8))) << (-context->dec_bitcount));
             context->dec_input_curpos += 2;
 			context->dec_bitcount += 16;               			
 		}												
@@ -76,9 +76,9 @@ void NEAR fillbuf(t_decoder_context *context, int n)
 }
 
 
-ulong NEAR getbits(t_decoder_context *context, int n)
+uint NEAR getbits(t_decoder_context *context, int n)
 {
-	ulong value;
+	uint value;
 
 	value = context->dec_bitbuf >> (32-(n));			
 	fillbuf(context, n);

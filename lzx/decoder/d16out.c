@@ -9,7 +9,7 @@
 
 void NEAR copy_data_to_output(
     t_decoder_context * context,
-    long                amount,
+    int                amount,
     const byte *        data
 )
 {

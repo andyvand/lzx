@@ -6,14 +6,14 @@
 #include "decoder.h"
 
 
-static long special_decode_aligned_block(t_decoder_context *context, long bufpos, int amount_to_decode)
+static int special_decode_aligned_block(t_decoder_context *context, int bufpos, int amount_to_decode)
 {
-	ulong	match_pos;
-	ulong	temp_pos;
-	long	bufpos_end;
+	uint	match_pos;
+	uint	temp_pos;
+	int	bufpos_end;
 	int		match_length;
 	int		c;
-	ulong	dec_bitbuf;
+	uint	dec_bitbuf;
 	char	dec_bitcount;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
@@ -130,20 +130,20 @@ static long special_decode_aligned_block(t_decoder_context *context, long bufpos
 
 
 #ifndef ASM_DECODE_ALIGNED_OFFSET_BLOCK
-long fast_decode_aligned_offset_block(t_decoder_context *context, long bufpos, int amount_to_decode)
+int fast_decode_aligned_offset_block(t_decoder_context *context, int bufpos, int amount_to_decode)
 {
-	ulong	match_pos;
-	ulong	temp_pos;
-	long	bufpos_end;
-	long	decode_residue;
+	uint	match_pos;
+	uint	temp_pos;
+	int	bufpos_end;
+	int	decode_residue;
 	int		match_length;
 	int		c;
-	ulong	dec_bitbuf;
+	uint	dec_bitbuf;
 	char	dec_bitcount;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
 	byte   *dec_mem_window;
-	ulong	match_ptr;
+	uint	match_ptr;
 	char	m;
 
 	/*
@@ -258,7 +258,7 @@ long fast_decode_aligned_offset_block(t_decoder_context *context, long bufpos, i
 
 int decode_aligned_offset_block(
     t_decoder_context * context, 
-    long                BufPos, 
+    int                BufPos, 
     int                 amount_to_decode
 )
 {
@@ -268,8 +268,8 @@ int decode_aligned_offset_block(
      */
     if (BufPos < MAX_MATCH)
     {
-        long    new_bufpos;
-        long    amount_to_slowly_decode;
+        int    new_bufpos;
+        int    amount_to_slowly_decode;
 
         amount_to_slowly_decode = min(MAX_MATCH-BufPos, amount_to_decode);
 

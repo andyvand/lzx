@@ -12,7 +12,7 @@
  */
 bool NEAR allocate_decompression_memory(t_decoder_context *context)
 {
-	ulong	pos_start;
+	uint	pos_start;
 
 	context->dec_num_position_slots	= 4;
 	pos_start						= 4;

@@ -6,17 +6,17 @@
 #include "decoder.h"
 
 
-static long special_decode_verbatim_block(
+static int special_decode_verbatim_block(
     t_decoder_context   *context,
-    long                BufPos,
+    int                BufPos,
     int                 amount_to_decode
 )
 {
-	ulong	match_pos;
-    long    bufpos_end;
+	uint	match_pos;
+    int    bufpos_end;
 	int		match_length;
 	int		c;
-	ulong	dec_bitbuf;
+	uint	dec_bitbuf;
     byte    *dec_input_curpos;
     byte    *dec_end_input_pos;
 	byte	*dec_mem_window;
@@ -132,23 +132,23 @@ static long special_decode_verbatim_block(
 
 #ifdef ASM_DECODE_VERBATIM_BLOCK
 
-long fast_decode_verbatim_block(
+int fast_decode_verbatim_block(
     t_decoder_context   *context,
-    long                BufPos,
+    int                BufPos,
     int                 amount_to_decode
 );
 
 #else /* !ASM_DECODE_VERBATIM_BLOCK */
 
-long fast_decode_verbatim_block(t_decoder_context *context, long BufPos, int amount_to_decode)
+int fast_decode_verbatim_block(t_decoder_context *context, int BufPos, int amount_to_decode)
 {
-	ulong	match_pos;
-	ulong	match_ptr;
-	long	bufpos_end;
-	long	decode_residue;
+	uint	match_pos;
+	uint	match_ptr;
+	int	bufpos_end;
+	int	decode_residue;
 	int		match_length;
 	int		c;
-	ulong	dec_bitbuf;
+	uint	dec_bitbuf;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
 	byte	*dec_mem_window;
@@ -258,7 +258,7 @@ long fast_decode_verbatim_block(t_decoder_context *context, long BufPos, int amo
 #endif /* ASM_DECODE_VERBATIM_BLOCK */
 
 
-int decode_verbatim_block(t_decoder_context *context, long BufPos, int amount_to_decode)
+int decode_verbatim_block(t_decoder_context *context, int BufPos, int amount_to_decode)
 {
     /*
      * Special case code when BufPos is near the beginning of the window;
@@ -266,8 +266,8 @@ int decode_verbatim_block(t_decoder_context *context, long BufPos, int amount_to
      */
     if (BufPos < MAX_MATCH)
     {
-        long    new_bufpos;
-        long    amount_to_slowly_decode;
+        int    new_bufpos;
+        int    amount_to_slowly_decode;
 
         amount_to_slowly_decode = min(MAX_MATCH-BufPos, amount_to_decode);
 

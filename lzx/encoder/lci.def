@@ -1,0 +1,2 @@
+; i686-pc-mingw32-dlltool --base-file /var/folders/hq/s7n8_wx50wd3vxklqrz_yt6m0000gn/T//cckVuaFY.base --output-exp lci.exp --dllname lci.dll --output-def lci.def --exclude-symbol=DllMainCRTStartup@12 --def /var/folders/hq/s7n8_wx50wd3vxklqrz_yt6m0000gn/T//ccjnrYRQ.def --output-lib liblci.dll.a
+EXPORTS

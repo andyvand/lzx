@@ -8,13 +8,13 @@
 
 int NEAR decode_aligned_offset_block(
     t_decoder_context * context,
-    long                bufpos,
+    int                bufpos,
     int                 amount_to_decode /* yes, it will equal 32768 */
 )
 {
-	ulong	match_pos;
-	ulong	temp_pos;
-	ulong	dec_bitbuf;
+	uint	match_pos;
+	uint	temp_pos;
+	uint	dec_bitbuf;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
     MATCH   match_info;

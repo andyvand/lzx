@@ -13,9 +13,9 @@ void NEAR init_decoder_translation(t_decoder_context *context)
 
 
 #ifdef ASM_TRANSLATE_E8
-ulong asm_decoder_translate_e8(ulong instr_pos, ulong file_size, byte *mem, long bytes);
+uint asm_decoder_translate_e8(uint instr_pos, uint file_size, byte *mem, int bytes);
 
-void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes)
+void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, int bytes)
 {     
 	/*
 	 * We don't want the ASM code to have to worry about where in the
@@ -31,9 +31,9 @@ void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes
 
 #else /* !ASM_TRANSLATE_E8 */
 
-void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes)
+void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, int bytes)
 {
-	ulong   end_instr_pos;
+	uint   end_instr_pos;
 	byte    temp[6];
 	byte    *mem_backup;
 
@@ -55,9 +55,9 @@ void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes
 
 	while (1)
 	{
-		unsigned long   absolute;
+		unsigned int   absolute;
 #if !defined(_X86_)
-		unsigned long   offset;
+		unsigned int   offset;
 #endif
 
 		/*
@@ -79,12 +79,12 @@ void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes
 		 */
 
 #if defined(_X86_)
-		absolute = *(ulong *) mem;
+		absolute = *(uint *) mem;
 #else
-        absolute =  ( (ulong)mem[0])     | 
-					(((ulong)mem[1])<<8) | 
-                    (((ulong)mem[2])<<16)|  
-					(((ulong)mem[3])<<24);
+        absolute =  ( (uint)mem[0])     | 
+					(((uint)mem[1])<<8) | 
+                    (((uint)mem[2])<<16)|  
+					(((uint)mem[3])<<24);
 #endif
 
 		if (absolute < context->dec_current_file_size)
@@ -92,7 +92,7 @@ void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes
 			/* absolute >= 0 && absolute < dec_current_file_size */
 
 #if defined(_X86_)
-			*(ulong *) mem = absolute - context->dec_instr_pos;
+			*(uint *) mem = absolute - context->dec_instr_pos;
 #else
 			offset = absolute - context->dec_instr_pos;
 			mem[0] = (byte) (offset & 255);
@@ -101,12 +101,12 @@ void NEAR decoder_translate_e8(t_decoder_context *context, byte *mem, long bytes
 			mem[3] = (byte) ((offset >> 24) & 255);
 #endif
 		}
-        else if ((ulong) (-(long) absolute) <= context->dec_instr_pos)
+        else if ((uint) (-(int) absolute) <= context->dec_instr_pos)
 		{
             /* absolute >= -instr_pos && absolute < 0 */
 
 #if defined(_X86_)
-			*(ulong *) mem = absolute + context->dec_current_file_size;
+			*(uint *) mem = absolute + context->dec_current_file_size;
 #else
 			offset = absolute + context->dec_current_file_size;
 			mem[0] = (byte) (offset & 255);

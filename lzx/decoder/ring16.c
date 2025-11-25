@@ -262,7 +262,7 @@ static void NEAR save_page(
 )
 {
     PBUFFER pBuffer;
-    long    iPagefileOffset;
+    int iPagefileOffset;
 
     pBuffer = Disk.PageTable[page].pBuffer;   /* look up this page */
 
@@ -307,7 +307,7 @@ static void NEAR save_page(
 
         if (pBuffer->BufferDirty)                 /* write on eject, if dirty */
         {
-            iPagefileOffset = (long) pBuffer->BufferPage * BUFFER_SIZE;
+            iPagefileOffset = (int) pBuffer->BufferPage * BUFFER_SIZE;
 
             if (context->dec_seek(Disk.Handle,iPagefileOffset,SEEK_SET) !=
                 iPagefileOffset)
@@ -454,7 +454,7 @@ void NEAR DComp_Save_Output_Pages(
 
     pages_to_save = (bytes_decoded / BUFFER_SIZE);
 
-    page_num = (int) ((context->dec_position_at_start & context->dec_window_mask) / (long) BUFFER_SIZE);
+    page_num = (int) ((context->dec_position_at_start & context->dec_window_mask) / (int) BUFFER_SIZE);
     data = context->dec_output_buffer;
 
     for (i = 0; i < pages_to_save; i++)
@@ -475,7 +475,7 @@ void NEAR DComp_Save_Output_Pages(
 
 static int NEAR retrieve_page_from_disk(t_decoder_context *context, int page, byte *buffer)
 {
-    long iPagefileOffset;
+    int iPagefileOffset;
     byte *data;
 
     data = last_chance_retrieve(context, page);
@@ -486,7 +486,7 @@ static int NEAR retrieve_page_from_disk(t_decoder_context *context, int page, by
         return 1;
     }
 
-    iPagefileOffset = (long) page * BUFFER_SIZE;
+    iPagefileOffset = (int) page * BUFFER_SIZE;
 
     if (context->dec_seek(Disk.Handle,iPagefileOffset,SEEK_SET) !=
         iPagefileOffset)
@@ -537,7 +537,7 @@ static BYTE * NEAR DComp_Ring_Load(
 )
 {
     PBUFFER pBuffer;
-    long iPagefileOffset;
+    int iPagefileOffset;
 
     pBuffer = Disk.PageTable[page].pBuffer;   /* look up this page */
 
@@ -579,7 +579,7 @@ static BYTE * NEAR DComp_Ring_Load(
 
         if (pBuffer->BufferDirty)                 /* write on eject, if dirty */
         {
-            iPagefileOffset = (long) pBuffer->BufferPage * BUFFER_SIZE;
+            iPagefileOffset = (int) pBuffer->BufferPage * BUFFER_SIZE;
 
             if (context->dec_seek(Disk.Handle,iPagefileOffset,SEEK_SET) !=
                 iPagefileOffset)
@@ -634,7 +634,7 @@ static BYTE * NEAR DComp_Ring_Load(
 /* --- DComp_Ring_Match() ------------------------------------------------- */
 static void NEAR DComp_Ring_Match(t_decoder_context *context, MATCH Match)
 {
-    long    SrcOffset;               /* offset into output ring */
+    int    SrcOffset;               /* offset into output ring */
     int     SrcPage;                  /* page # where that offset lies */
     int     Chunk;                    /* number of bytes this pass */
     BYTE FAR *SrcPtr;             /* pointer to source bytes */
@@ -656,7 +656,7 @@ static void NEAR DComp_Ring_Match(t_decoder_context *context, MATCH Match)
             /*
              * Match source inside current output buffer?
              */
-            if (Match.Dist <= (long) (context->dec_output_curpos - context->dec_output_buffer))
+            if (Match.Dist <= (int) (context->dec_output_curpos - context->dec_output_buffer))
             {
                 SrcPtr = context->dec_output_curpos - Match.Dist;
 

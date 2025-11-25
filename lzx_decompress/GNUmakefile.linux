@@ -1,0 +1,28 @@
+TARGETNAME=lzx_decompress
+TARGETPATH=../../bin
+TARGETTYPE=APPLICATION
+CC = gcc
+AR = ar
+RANLIB = ranlib
+CFLAGS = -DMULTIPLE_SEARCH_TREES=1 -O2 -I../../inc
+LDFLAGS =
+RM = rm -f
+INSTALL = install -m 755
+INSTALL_DIR = /usr
+
+OBJS = \
+    lzx_decompress.o
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+all: $(TARGETNAME)
+
+$(TARGETNAME): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ ../lzx/decoder/libldi.a
+
+clean:
+	$(RM) $(OBJS) $(TARGETNAME)
+
+install:
+	$(INSTALL) $(TARGETNAME) $(INSTALL_DIR)/bin/$(TARGETNAME)

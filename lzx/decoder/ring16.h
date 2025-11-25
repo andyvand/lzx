@@ -28,12 +28,12 @@ typedef struct
 typedef struct
 {
     short Len;
-    long  Dist;
+    int   Dist;
 } MATCH;
 
 typedef struct
 {
     char wildName[2];
-    unsigned long fileSize;
+    unsigned int fileSize;
 } RINGNAME, FAR *PRINGNAME;
 

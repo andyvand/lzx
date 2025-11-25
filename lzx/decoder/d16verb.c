@@ -8,12 +8,12 @@
 
 int NEAR decode_verbatim_block(
     t_decoder_context * context,
-    long                BufPos,
+    int                BufPos,
     int                 amount_to_decode /* yes, it will equal 32768 */
 )
 {
-	ulong	match_pos;
-	ulong	dec_bitbuf;
+	uint	match_pos;
+	uint	dec_bitbuf;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
 	int		match_length;

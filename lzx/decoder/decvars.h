@@ -8,7 +8,7 @@
  * MAX_MAIN_TREE_ELEMENTS should be >= 256 + 8*num_position_slots
  * (that comes out to 256 + 8*51 right now, for a 2 MB window).
  *
- * Make divisible by 4 so things are longword aligned.
+ * Make divisible by 4 so things are intword aligned.
  */
 #define MAX_MAIN_TREE_ELEMENTS 672
 
@@ -21,11 +21,11 @@ typedef struct
 #endif
 
 	/* window/decoding buffer parameters */
-	ulong               dec_window_size;
-	ulong				dec_window_mask;
+	uint               dec_window_size;
+	uint				dec_window_mask;
 
 	/* previous match offsets */
-    ulong               dec_last_matchpos_offset[NUM_REPEATED_OFFSETS];
+    uint               dec_last_matchpos_offset[NUM_REPEATED_OFFSETS];
 
 	/* main tree table */
 	short				dec_main_tree_table[1 << MAIN_TREE_TABLE_BITS];
@@ -58,14 +58,14 @@ typedef struct
     byte *              dec_output_buffer;
 
     /* position in data stream at start of this decode call */
-    long                dec_position_at_start;
+    int                dec_position_at_start;
 
 	/* previous lengths */
 	byte				dec_main_tree_prev_len[MAX_MAIN_TREE_ELEMENTS];
 	byte				dec_secondary_length_tree_prev_len[NUM_SECONDARY_LENGTHS];
 
 	/* bitwise i/o */
-	ulong               dec_bitbuf;
+	uint               dec_bitbuf;
 	signed char 		dec_bitcount;
 
 	/* number of distinct position (displacement) slots */
@@ -75,16 +75,16 @@ typedef struct
     bool                dec_error_condition;
 
 	/* misc */
-	long          		dec_bufpos;
-	ulong				dec_current_file_size;
-	ulong				dec_instr_pos;
-    ulong               dec_num_cfdata_frames;
+	int          		dec_bufpos;
+	uint				dec_current_file_size;
+	uint				dec_instr_pos;
+    uint               dec_num_cfdata_frames;
 
     /* original size of current block being decoded (in uncompressed bytes) */
-    long                dec_original_block_size;
+    int                dec_original_block_size;
 
     /* remaining size of current block being decoded (in uncompressed bytes) */
-	long				dec_block_size;
+	int				dec_block_size;
 
 	/* type of current block being decoded */
 	lzx_block_type		dec_block_type;
@@ -117,7 +117,7 @@ typedef struct
         BYTE HUGE *BufEnd;         /* last byte in history buffer + 1 */
         BYTE HUGE *BufPos;         /* current position in output buffer */
 
-        unsigned long  Cur;        /* current position in the history buffer */
+        unsigned int  Cur;        /* current position in the history buffer */
         unsigned short NumBytes;   /* total number of bytes to decompress */
         int       fOutOverflow;    /* if too little space in output buffer */
         BYTE      WindowBits;      /* needed in DComp_Reset() */
@@ -151,7 +151,7 @@ typedef struct
 #ifndef ALLOC_VARS
 
 EXT const byte NEAR     dec_extra_bits[];
-EXT const long NEAR     MP_POS_minus2[];
+EXT const int NEAR     MP_POS_minus2[];
 
 #else
 
@@ -170,7 +170,7 @@ const byte NEAR dec_extra_bits[] =
  * first (base) position covered by each slot
  * 2 subtracted for optimisation purposes (see decverb.c/decalign.c comments)
  */
-const long NEAR MP_POS_minus2[sizeof(dec_extra_bits)] =   
+const int NEAR MP_POS_minus2[sizeof(dec_extra_bits)] =   
 {
     0-2,        1-2,        2-2,        3-2,        4-2,        6-2,        8-2,        12-2,
 	16-2,       24-2,       32-2,       48-2,       64-2,       96-2,       128-2,      192-2,

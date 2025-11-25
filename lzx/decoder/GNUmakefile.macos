@@ -4,8 +4,8 @@ TARGETTYPE=LIBRARY
 CC = clang
 AR = ar
 RANLIB = ranlib
-CFLAGS = -DUSE_NOLIBS=1 -O2 -I../../inc -arch x86_64 -arch arm64
-LDFLAGS = -dynamiclib -arch x86_64 -arch arm64
+CFLAGS = -gdwarf -O2 -I../../inc -arch x86_64 -arch arm64
+LDFLAGS = -gdwarf -dynamiclib -arch x86_64 -arch arm64
 RM = rm -f
 INSTALL = install -m 755
 INSTALL_DIR = /usr/local

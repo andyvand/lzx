@@ -10,8 +10,8 @@
 static int decode_block(
 	t_decoder_context	*context, 
 	lzx_block_type		block_type, 
-	long				bufpos, 
-    long                amount_to_decode
+	int				bufpos, 
+    int                amount_to_decode
 );
 
 
@@ -21,8 +21,8 @@ static int decode_block(
 static int decode_block(
 	t_decoder_context	*context, 
 	lzx_block_type		block_type, 
-	long				bufpos, 
-    long                amount_to_decode
+	int				bufpos, 
+    int                amount_to_decode
 )
 {
     int result;
@@ -44,10 +44,10 @@ static int decode_block(
 /*
  * Main decode entrypoint
  */
-long NEAR decode_data(t_decoder_context *context, long bytes_to_decode)
+int NEAR decode_data(t_decoder_context *context, int bytes_to_decode)
 {                                                                                                                                                                                                                                          
-	ulong			amount_can_decode;
-	long			total_decoded;
+	uint			amount_can_decode;
+	int			total_decoded;
 
 	total_decoded = 0;
 
@@ -55,9 +55,9 @@ long NEAR decode_data(t_decoder_context *context, long bytes_to_decode)
 	{
 		if (context->dec_decoder_state == DEC_STATE_START_NEW_BLOCK)
 		{
-			ulong	temp1;                                                                                           
-			ulong	temp2;
-			ulong	temp3;
+			uint	temp1;                                                                                           
+			uint	temp2;
+			uint	temp3;
 			bool	do_translation;
 
 			/*
@@ -72,7 +72,7 @@ long NEAR decode_data(t_decoder_context *context, long bytes_to_decode)
 
 				if (do_translation)
 				{
-					ulong high, low;
+					uint high, low;
 
 					high = getbits(context, 16);
 					low  = getbits(context, 16);

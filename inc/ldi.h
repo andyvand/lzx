@@ -42,22 +42,22 @@
 
 #ifndef _BYTE_DEFINED
 #define _BYTE_DEFINED
-typedef unsigned char  BYTE;
+typedef unsigned char   BYTE;
 #endif
 
 #ifndef _UINT_DEFINED
 #define _UINT_DEFINED
-typedef unsigned int  UINT;
+typedef unsigned int    UINT;
 #endif
 
-#ifndef _ULONG_DEFINED
-#define _ULONG_DEFINED
-typedef unsigned long  ULONG;
+#ifndef _Uint_DEFINED
+#define _Uint_DEFINED
+typedef unsigned int    uint;
 #endif
 
-#ifdef __APPLE__
-typedef int *           INT_PTR;
-typedef unsigned int *  UINT_PTR;
+#ifdef __GNUC__
+typedef long            INT_PTR;
+typedef unsigned long   UINT_PTR;
 #endif
 
 #ifndef NEAR
@@ -91,10 +91,12 @@ typedef void HUGE *  MI_MEMORY;
 
 #ifndef _MHANDLE_DEFINED
 #define _MHANDLE_DEFINED
-#if defined(_WIN64)
+#if defined(_WIN64) && defined(_MSC_VER)
 typedef unsigned __int64 MHANDLE;
+#elif defined(_WIN64)
+typedef unsigned long long MMHANDLE
 #else
-typedef unsigned long  MHANDLE;
+typedef unsigned long MHANDLE;
 #endif
 #endif
 
@@ -117,7 +119,7 @@ typedef unsigned long  MHANDLE;
  *  and pmode calls are those defined for _open.  LDI expects error
  *  handling to be identical to these C run-time routines.
  *
- *  As long as you faithfully copy these aspects, you can supply
+ *  As int as you faithfully copy these aspects, you can supply
  *  any functions you like!
  *
  *  For PFNOPEN, the pszFile parameter will take on a special form for LDI's
@@ -201,7 +203,7 @@ typedef INT_PTR (FAR DIAMONDAPI *PFNOPEN) (char FAR *pszFile,int oflag,int pmode
 typedef UINT (FAR DIAMONDAPI *PFNREAD) (INT_PTR hf, void FAR *pv, UINT cb);
 typedef UINT (FAR DIAMONDAPI *PFNWRITE)(INT_PTR hf, void FAR *pv, UINT cb);
 typedef int  (FAR DIAMONDAPI *PFNCLOSE)(INT_PTR hf);
-typedef long (FAR DIAMONDAPI *PFNSEEK) (INT_PTR hf, long dist, int seektype);
+typedef int (FAR DIAMONDAPI *PFNSEEK) (INT_PTR hf, int dist, int seektype);
 
 
 /* --- LDI-defined types -------------------------------------------------- */
@@ -224,7 +226,7 @@ typedef MHANDLE LDI_CONTEXT_HANDLE;      /* hmd */
  */
 #ifndef _PFNALLOC_DEFINED
 #define _PFNALLOC_DEFINED
-typedef MI_MEMORY (FAR DIAMONDAPI *PFNALLOC)(ULONG cb);       /* pfnma */
+typedef MI_MEMORY (FAR DIAMONDAPI *PFNALLOC)(UINT cb);       /* pfnma */
 #endif
 
 
@@ -368,9 +370,9 @@ int FAR DIAMONDAPI LDIDestroyDecompression(LDI_CONTEXT_HANDLE hmd);
 int FAR DIAMONDAPI LDIGetWindow(
         LDI_CONTEXT_HANDLE  hmd,            /* decompression context */
         BYTE FAR **         ppWindow,       /* pointer to window start */
-        long *              pFileOffset,    /* offset in folder */
-        long *              pWindowOffset,  /* offset in window */
-        long *              pcbBytesAvail);   /* bytes avail from window start */
+        int *              pFileOffset,    /* offset in folder */
+        int *              pWindowOffset,  /* offset in window */
+        int *              pcbBytesAvail);   /* bytes avail from window start */
 #endif
 
 
@@ -404,8 +406,8 @@ int FAR DIAMONDAPI LDIGetWindow(
 #pragma pack (1)
 
 typedef struct {
-    long	WindowSize;         /* buffersize */
-    long	fCPUtype;           /* controls internal code selection */
+    int	WindowSize;         /* buffersize */
+    int	fCPUtype;           /* controls internal code selection */
 } LZXDECOMPRESS; /* qdec */
 
 #pragma pack ()

@@ -46,7 +46,7 @@ static bool NEAR ReadRepTree(
 	byte				*len
 )
 {
-	ulong	mask;
+	uint	mask;
 	int		i;
 	int		consecutive;
 	byte	small_bitlen[24];

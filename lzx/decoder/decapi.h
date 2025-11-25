@@ -1,3 +1,4 @@
+
 /*
  * decapi.h
  * 
@@ -6,7 +7,7 @@
 
 bool LZX_DecodeInit(
 	t_decoder_context *context,
-	long		compression_window_size,
+	int         compression_window_size,
 	PFNALLOC	pfnma,
     PFNFREE     pfnmf,
     PFNOPEN     pfnopen,
@@ -22,10 +23,10 @@ void LZX_DecodeNewGroup(t_decoder_context *context);
 
 int LZX_Decode(
 	t_decoder_context *context,
-	long	bytes_to_decode,
+	int 	bytes_to_decode,
 	byte *	compressed_input_buffer,
-	long	compressed_input_size,
+	int 	compressed_input_size,
 	byte *	uncompressed_output_buffer,
-	long	uncompressed_output_size,
-	long *	bytes_decoded
+	int 	uncompressed_output_size,
+	int *	bytes_decoded
 );

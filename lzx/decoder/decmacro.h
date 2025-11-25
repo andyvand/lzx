@@ -22,7 +22,7 @@
 	j = context->dec_main_tree_table[dec_bitbuf >> (32-MAIN_TREE_TABLE_BITS)];	\
 	if (j < 0)															\
 	{																	\
-        ulong mask = (1L << (32-1-MAIN_TREE_TABLE_BITS));               \
+        uint mask = (1L << (32-1-MAIN_TREE_TABLE_BITS));               \
 		do																\
 		{																\
 	 		j = -j;														\
@@ -44,7 +44,7 @@
     matchlen = context->dec_secondary_length_tree_table[dec_bitbuf >> (32-SECONDARY_LEN_TREE_TABLE_BITS)]; \
 	if (matchlen < 0)                                                	\
 	{                                                                	\
-        ulong mask = (1L << (32-1-SECONDARY_LEN_TREE_TABLE_BITS));      \
+        uint mask = (1L << (32-1-SECONDARY_LEN_TREE_TABLE_BITS));      \
 		do                                                          	\
 		{																\
 	 		matchlen = -matchlen;                                      	\
@@ -101,7 +101,7 @@
 	dec_bitcount -= (N);                    \
 	if (dec_bitcount <= 0)      			\
 	{                                 		\
-        dec_bitbuf |= ((((ulong) *dec_input_curpos | (((ulong) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
+        dec_bitbuf |= ((((uint) *dec_input_curpos | (((uint) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
         dec_input_curpos += 2;              \
 		dec_bitcount += 16;               	\
     }                                       \
@@ -118,7 +118,7 @@
 	dec_bitcount -= (N);                \
 	if (dec_bitcount <= 0)      		\
 	{                                 	\
-        dec_bitbuf |= ((((ulong) *dec_input_curpos | (((ulong) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
+        dec_bitbuf |= ((((uint) *dec_input_curpos | (((uint) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
         dec_input_curpos += 2; \
 		dec_bitcount += 16;				\
 	}                                   \
@@ -133,12 +133,12 @@
 	dec_bitcount -= (N);                \
 	if (dec_bitcount <= 0)      		\
 	{                                 	\
-        dec_bitbuf |= ((((ulong) *dec_input_curpos | (((ulong) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
+        dec_bitbuf |= ((((uint) *dec_input_curpos | (((uint) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
         dec_input_curpos += 2; \
 		dec_bitcount += 16;				\
 		if (dec_bitcount <= 0) \
 		{ \
-            dec_bitbuf |= ((((ulong) *dec_input_curpos | (((ulong) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
+            dec_bitbuf |= ((((uint) *dec_input_curpos | (((uint) *(dec_input_curpos+1)) << 8))) << (-dec_bitcount)); \
             dec_input_curpos += 2; \
 			dec_bitcount += 16;         \
 		} \
