@@ -61,30 +61,30 @@ static int special_decode_aligned_block(t_decoder_context *context, int bufpos, 
 
 			if (m > 2)
 			{
-				if (dec_extra_bits[ m ] >= 3)
+				if (dec_extra_bits[(uint)m] >= 3)
 				{
-					if (dec_extra_bits[m]-3)
+					if (dec_extra_bits[(uint)m]-3)
 					{
 						/* no need to getbits17 */
-	    				GET_BITS_NOEOFCHECK(dec_extra_bits[ m ] - 3, temp_pos);
+	    				GET_BITS_NOEOFCHECK(dec_extra_bits[(uint)m] - 3, temp_pos);
 					}
 					else
 					{
 						temp_pos = 0;
 					}
 
-	    			match_pos = MP_POS_minus2[m] + (temp_pos << 3);
+	    			match_pos = MP_POS_minus2[(uint)m] + (temp_pos << 3);
 
 	    			DECODE_ALIGNED_NOEOFCHECK(temp_pos);
 	    			match_pos += temp_pos;
 				}
 				else
 				{
-					if (dec_extra_bits[m])
+					if (dec_extra_bits[(uint)m])
 					{
-	    				GET_BITS_NOEOFCHECK(dec_extra_bits[ m ], match_pos);
+	    				GET_BITS_NOEOFCHECK(dec_extra_bits[(uint)m], match_pos);
 
-						match_pos += MP_POS_minus2[m];
+						match_pos += MP_POS_minus2[(uint)m];
 					}
 					else
 					{
@@ -98,11 +98,11 @@ static int special_decode_aligned_block(t_decoder_context *context, int bufpos, 
 			}
 			else
 	 		{
-				match_pos = context->dec_last_matchpos_offset[m];
+				match_pos = context->dec_last_matchpos_offset[(uint)m];
 
 				if (m)
 				{
-					context->dec_last_matchpos_offset[m] = context->dec_last_matchpos_offset[0];
+					context->dec_last_matchpos_offset[(uint)m] = context->dec_last_matchpos_offset[0];
 					context->dec_last_matchpos_offset[0] = match_pos;
 				}
 	 		}
@@ -185,34 +185,34 @@ int fast_decode_aligned_offset_block(t_decoder_context *context, int bufpos, int
 
 			if (m > 2)
 			{
-				if (dec_extra_bits[ m ] >= 3)
+				if (dec_extra_bits[(uint)m] >= 3)
 				{
-					if (dec_extra_bits[m]-3)
+                    if ((dec_extra_bits[(uint)m]-3) != 0)
 					{
 						/* no need to getbits17 */
-	    				GET_BITS_NOEOFCHECK(dec_extra_bits[ m ] - 3, temp_pos);
+	    				GET_BITS_NOEOFCHECK(dec_extra_bits[(uint)m] - 3, temp_pos);
 					}
 					else
 					{
 						temp_pos = 0;
 					}
 
-	    			match_pos = MP_POS_minus2[m] + (temp_pos << 3);
+	    			match_pos = MP_POS_minus2[(uint)m] + (temp_pos << 3);
 
 	    			DECODE_ALIGNED_NOEOFCHECK(temp_pos);
 	    			match_pos += temp_pos;
 				}
 				else
 				{
-					if (dec_extra_bits[m])
+					if (dec_extra_bits[(uint)m])
 					{
-	    				GET_BITS_NOEOFCHECK(dec_extra_bits[ m ], match_pos);
+	    				GET_BITS_NOEOFCHECK(dec_extra_bits[(uint)m], match_pos);
 
-						match_pos += MP_POS_minus2[m];
+						match_pos += MP_POS_minus2[(uint)m];
 					}
 					else
 					{
-						match_pos = MP_POS_minus2[m];
+						match_pos = MP_POS_minus2[(uint)m];
 					}
 				}
 
@@ -222,11 +222,11 @@ int fast_decode_aligned_offset_block(t_decoder_context *context, int bufpos, int
 			}
 			else
 	 		{
-				match_pos = context->dec_last_matchpos_offset[m];
+				match_pos = context->dec_last_matchpos_offset[(uint)m];
 
 				if (m)
 				{
-					context->dec_last_matchpos_offset[m] = context->dec_last_matchpos_offset[0];
+					context->dec_last_matchpos_offset[(uint)m] = context->dec_last_matchpos_offset[0];
 					context->dec_last_matchpos_offset[0] = match_pos;
 				}
 	 		}

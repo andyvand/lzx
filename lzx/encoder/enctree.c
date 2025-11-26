@@ -25,7 +25,7 @@ static void WriteRepTree(
 	char		MiniLen[24];
 	char		k;
 	byte		temp_store;
-    byte * z=context->enc_output_buffer_curpos;
+    //byte * z=context->enc_output_buffer_curpos;
 
 	static const byte Modulo17Lookup[] =
 	{
@@ -127,7 +127,7 @@ static void WriteRepTree(
 		else
 	 		k = Modulo17Lookup[ pLastLen[i]-pLen[i]+17 ];
 
-		output_bits(context, MiniLen[k], MiniCode[k]);
+		output_bits(context, MiniLen[(uint)k], MiniCode[(uint)k]);
 
 		if (k == 17)
 		{
@@ -144,7 +144,7 @@ static void WriteRepTree(
 	 		output_bits(context, TREE_ENC_REP_SAME_EXTRA_BITS, Same-TREE_ENC_REP_MIN);
 
 	 		k = Modulo17Lookup[ pLastLen[i]-pLen[i]+17 ];
-			output_bits(context, MiniLen[k], MiniCode[k]);
+			output_bits(context, MiniLen[(uint)k], MiniCode[(uint)k]);
 
 	 		i += Same-1;
 		}

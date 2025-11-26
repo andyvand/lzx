@@ -113,7 +113,7 @@ static void make_code(t_encoder_context *context, int n, char len[], ushort code
 
 	for (i = 0; i < n; i++)
 	{
-		code[i] = start[len[i]]++;
+		code[i] = start[(uint)len[i]]++;
 	}
 }
 

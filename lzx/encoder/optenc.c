@@ -1146,7 +1146,7 @@ static bool redo_first_block(t_encoder_context *context, int *bufpos_ptr)
 {
 	int 	start_at;
 	int 	earliest_can_start_at;
-	int 	pos_in_file;
+	//int 	pos_in_file;
 	int 	history_needed;
 	int 	history_avail;
 	int 	BufPos;
@@ -1167,7 +1167,7 @@ static bool redo_first_block(t_encoder_context *context, int *bufpos_ptr)
 	/*
 	 * How many bytes are we into the file?
 	 */
-	pos_in_file = BufPos - context->enc_window_size;
+	//pos_in_file = BufPos - context->enc_window_size;
 
 	/*
 	 * First let's figure out the total history required from

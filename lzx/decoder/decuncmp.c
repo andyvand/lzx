@@ -8,7 +8,6 @@
 
 int decode_uncompressed_block(t_decoder_context *context, int bufpos, int amount_to_decode)
 {
-	int	bytes_decoded = 0;
 	int	bufpos_end;
 	int	decode_residue;
     uint   bufpos_start;

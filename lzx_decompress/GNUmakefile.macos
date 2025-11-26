@@ -4,8 +4,8 @@ TARGETTYPE=APPLICATION
 CC = clang
 AR = ar
 RANLIB = ranlib
-CFLAGS = -DMULTIPLE_SEARCH_TREES=1 -O2 -I../../inc -arch x86_64 -arch arm64 -gdwarf
-LDFLAGS = -arch x86_64 -arch arm64 -gdwarf
+CFLAGS = -DMULTIPLE_SEARCH_TREES=1 -O2 -I../../inc -arch x86_64 -arch arm64 -Wall -Wpedantic
+LDFLAGS = -arch x86_64 -arch arm64
 RM = rm -f
 INSTALL = install -m 755
 INSTALL_DIR = /usr/local

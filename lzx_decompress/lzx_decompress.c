@@ -80,7 +80,6 @@ BOOL CompressFile(
     UINT DestSize;
     UINT dwSrcSize = 32768;
     UINT dwDestSize = 32768;
-    UINT BytesRead;
     UINT BytesDecompressed;
     int LDIRet;
     UINT BytesRemaining;

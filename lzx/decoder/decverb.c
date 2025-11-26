@@ -19,7 +19,7 @@ static int special_decode_verbatim_block(
 	uint	dec_bitbuf;
     byte    *dec_input_curpos;
     byte    *dec_end_input_pos;
-	byte	*dec_mem_window;
+	//byte	*dec_mem_window;
 	char	dec_bitcount;
 	char	m;
 
@@ -30,7 +30,7 @@ static int special_decode_verbatim_block(
 	dec_bitbuf		  = context->dec_bitbuf;
 	dec_input_curpos  = context->dec_input_curpos;
 	dec_end_input_pos = context->dec_end_input_pos;
-	dec_mem_window	  = context->dec_mem_window;
+	//dec_mem_window	  = context->dec_mem_window;
 
     bufpos_end = BufPos + amount_to_decode;
 
@@ -67,10 +67,10 @@ static int special_decode_verbatim_block(
 	  		/* read any extra bits for the match position */
 			if (m > 2) 
 			{
-				if (m > 3) /* dec_extra_bits[m] != 0 */
+				if (m > 3) /* dec_extra_bits[(uint)m] != 0 */
 				{
-	    			GET_BITS17_NOEOFCHECK(dec_extra_bits[ m ], match_pos);
-					match_pos += MP_POS_minus2[m];
+	    			GET_BITS17_NOEOFCHECK(dec_extra_bits[(uint)m], match_pos);
+					match_pos += MP_POS_minus2[(uint)m];
 				}
 				else
 				{
@@ -96,11 +96,11 @@ static int special_decode_verbatim_block(
 			else
 	 		{
 				/* positions 0, 1, 2 denote repeated offsets */
-				match_pos = context->dec_last_matchpos_offset[m];
+				match_pos = context->dec_last_matchpos_offset[(uint)m];
 
 				if (m)
 				{
-					context->dec_last_matchpos_offset[m] = context->dec_last_matchpos_offset[0];
+					context->dec_last_matchpos_offset[(uint)m] = context->dec_last_matchpos_offset[0];
 					context->dec_last_matchpos_offset[0] = match_pos;
 				}
 	 		}
@@ -151,7 +151,7 @@ int fast_decode_verbatim_block(t_decoder_context *context, int BufPos, int amoun
 	uint	dec_bitbuf;
     byte   *dec_input_curpos;
     byte   *dec_end_input_pos;
-	byte	*dec_mem_window;
+	//byte	*dec_mem_window;
 	char	dec_bitcount;
 	char	m;
 
@@ -162,7 +162,7 @@ int fast_decode_verbatim_block(t_decoder_context *context, int BufPos, int amoun
 	dec_bitbuf		  = context->dec_bitbuf;
 	dec_input_curpos  = context->dec_input_curpos;
 	dec_end_input_pos = context->dec_end_input_pos;
-	dec_mem_window	  = context->dec_mem_window;
+	//dec_mem_window	  = context->dec_mem_window;
 
 	bufpos_end = BufPos + amount_to_decode;
 
@@ -192,10 +192,10 @@ int fast_decode_verbatim_block(t_decoder_context *context, int BufPos, int amoun
 	  		/* read any extra bits for the match position */
 			if (m > 2) 
 			{
-				if (m > 3) /* dec_extra_bits[m] != 0 */
+				if (m > 3) /* dec_extra_bits[(uint)m] != 0 */
 				{
-	    			GET_BITS17_NOEOFCHECK(dec_extra_bits[ m ], match_pos);
-					match_pos += MP_POS_minus2[m];
+	    			GET_BITS17_NOEOFCHECK(dec_extra_bits[(uint)m], match_pos);
+					match_pos += MP_POS_minus2[(uint)m];
 				}
 				else
 				{
@@ -221,11 +221,11 @@ int fast_decode_verbatim_block(t_decoder_context *context, int BufPos, int amoun
 			else
 	 		{
 				/* positions 0, 1, 2 denote repeated offsets */
-				match_pos = context->dec_last_matchpos_offset[m];
+				match_pos = context->dec_last_matchpos_offset[(uint)m];
 
 				if (m)
 				{
-					context->dec_last_matchpos_offset[m] = context->dec_last_matchpos_offset[0];
+					context->dec_last_matchpos_offset[(uint)m] = context->dec_last_matchpos_offset[0];
 					context->dec_last_matchpos_offset[0] = match_pos;
 				}
 	 		}
