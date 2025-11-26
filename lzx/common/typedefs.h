@@ -7,7 +7,7 @@
 
 #define _TYPEDEFS_H
 
-#ifdef __APPLE__
+#if defined(__GNUC__) && !defined(__MINGW32__)
 #include <stdint.h>
 #include <sys/types.h>
 #else
@@ -75,10 +75,10 @@ typedef unsigned int *  UINT_PTR;
 #endif // !BIT16
 
 #ifndef DIAMONDAPI
-#   ifdef __APPLE__
+#   if defined(__GNUC__) && !defined(__MINGW32__)
 #       define DIAMONDAPI
 #   else
-#	    define DIAMONDAPI __cdecl
+#       define DIAMONDAPI __cdecl
 #   endif
 #endif
 

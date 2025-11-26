@@ -4,7 +4,7 @@ TARGETTYPE=LIBRARY
 CC = gcc
 AR = ar
 RANLIB = ranlib
-CFLAGS = -DUSE_NOLIBS=1 -D__APPLE__=1 -O2 -I../../inc
+CFLAGS = -DUSE_NOLIBS=1 -O2 -I../../inc
 LDFLAGS = -shared
 RM = rm -f
 INSTALL = install -m 755

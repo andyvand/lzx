@@ -369,7 +369,7 @@ static uint return_difference(
 		/* diff = (log2a*log2a) - (log2b*log2b); */
 		diff = square_table[log2a] - square_table[log2b];
 
-#ifdef __APPLE__
+#ifdef __GNUC__
 		cum_diff += (uint)diff;
 #else
 		cum_diff += abs(diff);
