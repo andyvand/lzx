@@ -218,7 +218,7 @@ Cleanup:
 
 void Usage(char *name)
 {
-    fprintf(stdout, "LZX compressor app\n");
+    fprintf(stdout, "LZX decompressor app\n");
     fprintf(stdout, "Copyright (C) 2025 - AnV Software\n");
     fprintf(stdout, "Usage:\n%s <infile> <outfile>\n", name);
 }
