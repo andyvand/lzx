@@ -19,8 +19,8 @@
 #define copymem(src,dst,size) memmove(dst,src,size)
 
 
-static bool			redo_first_block(t_encoder_context *context, long *bufpos_ptr);
-static void			block_end(t_encoder_context *context, long BufPos);
+static bool			redo_first_block(t_encoder_context *context, int *bufpos_ptr);
+static void			block_end(t_encoder_context *context, int BufPos);
 
 
 /*
@@ -86,12 +86,12 @@ if (context->enc_literals >= context->enc_next_tree_create)			\
 #ifdef DIAMOND_DEBUG
 static void VERIFY_MATCH(
     t_encoder_context   *context,
-    long                bufpos,
+    int                 bufpos,
     int                 largest_match_len
 )
 {
     int     i, j;
-    ulong   match_pos;
+    uint    match_pos;
 
     /*
      * Ensure match does not cross boundary
@@ -143,16 +143,16 @@ void flush_all_pending_blocks(t_encoder_context *context)
 
 void encoder_start(t_encoder_context *context)
 {
-	long BytesRead, RealBufPos;
+	int BytesRead, RealBufPos;
 
 	/*
 	 * RealBufPos is our position in the window,
 	 * and equals [0...window_size + second_partition_size - 1]
 	 */
 #ifdef STRICT_POINTERS
-	RealBufPos = context->enc_BufPos - (long)((((ulong) context->enc_RealMemWindow) - ((ulong) context->enc_MemWindow)));   //BC6
+	RealBufPos = context->enc_BufPos - (int)((((uint) context->enc_RealMemWindow) - ((uint) context->enc_MemWindow)));   //BC6
 #else
-	RealBufPos = context->enc_BufPos - (long)(context->enc_RealMemWindow - context->enc_MemWindow);
+	RealBufPos = context->enc_BufPos - (int)(context->enc_RealMemWindow - context->enc_MemWindow);
 #endif
 
 	BytesRead = comp_read_input(context, RealBufPos, CHUNK_SIZE);
@@ -211,15 +211,15 @@ static void update_tree_estimates(t_encoder_context *context)
 }
 
 
-void opt_encode_top(t_encoder_context *context, long BytesRead)
+void opt_encode_top(t_encoder_context *context, int BytesRead)
 {
-	ulong	BufPos;
-	ulong	RealBufPos;
-	ulong	BufPosEnd;
-	ulong	BufPosEndThisChunk;
-	ulong	MatchPos;
-	ulong	i;
-	ulong	end_pos;
+	uint	BufPos;
+	uint	RealBufPos;
+	uint	BufPosEnd;
+	uint	BufPosEndThisChunk;
+	uint	MatchPos;
+	uint	i;
+	uint	end_pos;
 	int		EncMatchLength; /* must be a signed number */
 
 	/*
@@ -276,7 +276,7 @@ void opt_encode_top(t_encoder_context *context, long BytesRead)
 		for (i = BREAK_LENGTH; i > 0; i--)
             quick_insert_bsearch_findmatch(
                 context,
-                BufPos - (long) i,
+                BufPos - (int) i,
                 BufPos - context->enc_window_size+4
             );
 	}
@@ -340,7 +340,7 @@ output_literal:
 			 *
 			 * Make sure it cannot exceed the end of the buffer.
 			 */
-			if ((ulong) EncMatchLength + BufPos > BufPosEndThisChunk)
+			if ((uint) EncMatchLength + BufPos > BufPosEndThisChunk)
 			{
 				EncMatchLength = BufPosEndThisChunk - BufPos;
 
@@ -369,10 +369,10 @@ output_literal:
 				 *  chosen.  The key to good compression ratios is to chose the
 				 *  least expensive path.
 				 */
-				ulong		span;
-				ulong		epos, bpos, NextPrevPos, MatchPos;
+				uint		span;
+				uint		epos, bpos, NextPrevPos, MatchPos;
 				decision_node *decision_node_ptr;
-				long		iterations;
+				int 		iterations;
 
 				/*
 				 * Points to the end of the area covered by this match; the span
@@ -416,7 +416,7 @@ output_literal:
 				 *
 				 * The cost, path and offset is stored at BufPos + Length.
 				 */
-				for (i = MIN_MATCH; i <= (ulong) EncMatchLength; i++)
+				for (i = MIN_MATCH; i <= (uint) EncMatchLength; i++)
 				{
 					/*
 					 * Get estimation of match cost given match length = i,
@@ -457,7 +457,7 @@ output_literal:
 
 #define rpt_offset_ptr(where,which_offset) decision_node_ptr[(where) - bpos].repeated_offset[(which_offset)]
 #else
-				decision_node_ptr = &context->enc_decision_node[-(long) bpos];
+				decision_node_ptr = &context->enc_decision_node[-(int) bpos];
 
 #define rpt_offset_ptr(where,which_offset) decision_node_ptr[(where)].repeated_offset[(which_offset)]
 #endif
@@ -481,13 +481,13 @@ output_literal:
 					 * than one character).
 					 */
 #ifdef STRICT_POINTERS
-					if (decision_node_ptr[BufPos - bpos].path != (ulong) (BufPos-1))
+					if (decision_node_ptr[BufPos - bpos].path != (uint) (BufPos-1))
 					{
-						ulong LastPos = decision_node_ptr[BufPos - bpos].path;
+						uint LastPos = decision_node_ptr[BufPos - bpos].path;
 #else
-					if (decision_node_ptr[BufPos].path != (ulong) (BufPos-1))
+					if (decision_node_ptr[BufPos].path != (uint) (BufPos-1))
 					{
-						ulong LastPos = decision_node_ptr[BufPos].path;
+						uint LastPos = decision_node_ptr[BufPos].path;
 #endif
 
 						/*
@@ -559,7 +559,7 @@ output_literal:
 					/*
 					 * Make sure that the match does not exceed the stop point
 					 */
-					if ((ulong) EncMatchLength + BufPos > BufPosEndThisChunk)
+					if ((uint) EncMatchLength + BufPos > BufPosEndThisChunk)
 					{
 						EncMatchLength = BufPosEndThisChunk - BufPos;
 						
@@ -575,7 +575,7 @@ output_literal:
 					 * input buffer), then break the loop and output the path.
 					 */
 					if (EncMatchLength > FAST_DECISION_THRESHOLD ||
-						BufPos + (ulong) EncMatchLength >= epos)
+						BufPos + (uint) EncMatchLength >= epos)
 					{
 						MatchPos = context->enc_matchpos_table[EncMatchLength];
 
@@ -610,7 +610,7 @@ output_literal:
 						else
 						{
 #endif
-							for (i = 1; i < (ulong) EncMatchLength; i++)
+							for (i = 1; i < (uint) EncMatchLength; i++)
 								quick_insert_bsearch_findmatch(
                                     context,
                                     BufPos + i,
@@ -631,7 +631,7 @@ output_literal:
 						}
 						else if (MatchPos)
 						{
-							ulong t = context->enc_last_matchpos_offset[0];
+							uint t = context->enc_last_matchpos_offset[0];
 							context->enc_last_matchpos_offset[0] = context->enc_last_matchpos_offset[MatchPos];
 							context->enc_last_matchpos_offset[MatchPos] = t;
 						}
@@ -650,10 +650,10 @@ output_literal:
 					if (EncMatchLength > 2 ||
                         (EncMatchLength == 2 && context->enc_matchpos_table[2] < BREAK_MAX_LENGTH_TWO_OFFSET))
 					{
-						if (span < (ulong) (BufPos + EncMatchLength))
+						if (span < (uint) (BufPos + EncMatchLength))
 						{
-							long end;
-							long i;
+							int end;
+							int i;
 
 							end = min(BufPos+EncMatchLength-bpos, LOOK-1);
 
@@ -742,7 +742,7 @@ output_literal:
 					 *  if it is found to be more cost effective to go through
 					 *  BufPos.
 					 */
-					for (i = MIN_MATCH; i <= (ulong) EncMatchLength; i++)
+					for (i = MIN_MATCH; i <= (uint) EncMatchLength; i++)
 					{
 						MATCH_EST(i, context->enc_matchpos_table[i], est);
 						est += cum_numbits;
@@ -801,7 +801,7 @@ output_literal:
 
    				do
 				{
-					ulong	PrevPos;
+					uint	PrevPos;
 
       				PrevPos = NextPrevPos;
 
@@ -885,7 +885,7 @@ output_literal:
 					(context->enc_literals >= (MAX_LITERAL_ITEMS-512)
 					|| context->enc_distances >= (MAX_DIST_ITEMS-512)))
 				{
-					if (redo_first_block(context, (long *)&BufPos))
+					if (redo_first_block(context, (int *)&BufPos))
 						goto top_of_main_loop;
 
 					/*
@@ -922,7 +922,7 @@ output_literal:
 				else
 #endif
 				{
-					for (i = 1; i < (ulong) EncMatchLength; i++)
+					for (i = 1; i < (uint) EncMatchLength; i++)
 						quick_insert_bsearch_findmatch(
                             context,
                             BufPos + i,
@@ -948,7 +948,7 @@ output_literal:
 				}
 				else if (MatchPos)
 				{
-					ulong t = context->enc_last_matchpos_offset[0];
+					uint t = context->enc_last_matchpos_offset[0];
 					context->enc_last_matchpos_offset[0] = context->enc_last_matchpos_offset[MatchPos];
 					context->enc_last_matchpos_offset[MatchPos] = t;
 				}
@@ -983,7 +983,7 @@ output_literal:
 			 */
 			if (context->enc_first_block)
 			{
-				if (redo_first_block(context, (long *)&BufPos))
+				if (redo_first_block(context, (int *)&BufPos))
 					goto top_of_main_loop;
 			}
 
@@ -1007,9 +1007,9 @@ output_literal:
 		 * RealBufPos is the real position in the file.
 		 */
 #ifdef STRICT_POINTERS
-		RealBufPos = BufPos - (((ulong) (context->enc_RealMemWindow)) - ((ulong) (context->enc_MemWindow)));
+		RealBufPos = BufPos - (((uint) (context->enc_RealMemWindow)) - ((uint) (context->enc_MemWindow)));
 #else
-		RealBufPos = BufPos - (ulong)(context->enc_RealMemWindow - context->enc_MemWindow);
+		RealBufPos = BufPos - (uint)(context->enc_RealMemWindow - context->enc_MemWindow);
 #endif
 		
 		if (RealBufPos < context->enc_window_size + context->enc_encoder_second_partition_size)
@@ -1021,7 +1021,7 @@ output_literal:
 		 */
 		if (context->enc_first_block)
 		{
-			if (redo_first_block(context, (long *)&BufPos))
+			if (redo_first_block(context, (int *)&BufPos))
 				goto top_of_main_loop;
 		}
 
@@ -1064,13 +1064,13 @@ output_literal:
 		copymem(
 			&context->enc_RealLeft[context->enc_encoder_second_partition_size],
 			&context->enc_RealLeft[0],
-			sizeof(ulong)*context->enc_window_size
+			sizeof(uint)*context->enc_window_size
 		);
 
 		copymem(
 			&context->enc_RealRight[context->enc_encoder_second_partition_size],
 			&context->enc_RealRight[0],
-			sizeof(ulong)*context->enc_window_size
+			sizeof(uint)*context->enc_window_size
 		);
 
 		context->enc_earliest_window_data_remaining = BufPos - context->enc_window_size;
@@ -1103,9 +1103,9 @@ output_literal:
          *  the ASM code still depends on them, and because of how we defined SLIDE
          */
 
-		(ulong) context->enc_MemWindow -= context->enc_encoder_second_partition_size * sizeof(context->enc_MemWindow[0]);
-		(ulong) context->enc_Left      -= context->enc_encoder_second_partition_size * sizeof(context->enc_Left[0]);
-		(ulong) context->enc_Right     -= context->enc_encoder_second_partition_size * sizeof(context->enc_Right[0]);
+		(uint) context->enc_MemWindow -= context->enc_encoder_second_partition_size * sizeof(context->enc_MemWindow[0]);
+		(uint) context->enc_Left      -= context->enc_encoder_second_partition_size * sizeof(context->enc_Left[0]);
+		(uint) context->enc_Right     -= context->enc_encoder_second_partition_size * sizeof(context->enc_Right[0]);
 #else
 		context->enc_MemWindow -= context->enc_encoder_second_partition_size;
 		context->enc_Left      -= context->enc_encoder_second_partition_size;
@@ -1122,7 +1122,7 @@ output_literal:
 }
 
 
-static void block_end(t_encoder_context *context, long BufPos)
+static void block_end(t_encoder_context *context, int BufPos)
 {
 	context->enc_first_block			= false;
 	context->enc_need_to_recalc_stats	= true;
@@ -1142,15 +1142,15 @@ static void block_end(t_encoder_context *context, long BufPos)
 }
 
 
-static bool redo_first_block(t_encoder_context *context, long *bufpos_ptr)
+static bool redo_first_block(t_encoder_context *context, int *bufpos_ptr)
 {
-	long	start_at;
-	long	earliest_can_start_at;
-	long	pos_in_file;
-	long	history_needed;
-	long	history_avail;
-	long	BufPos;
-	long	split_at_literal;
+	int 	start_at;
+	int 	earliest_can_start_at;
+	int 	pos_in_file;
+	int 	history_needed;
+	int 	history_avail;
+	int 	BufPos;
+	int 	split_at_literal;
 
 	context->enc_first_block = false;
 
@@ -1188,9 +1188,9 @@ static bool redo_first_block(t_encoder_context *context, long *bufpos_ptr)
 		history_needed += context->enc_window_size;
 
 #ifdef STRICT_POINTERS
-	history_avail = (long)(&context->enc_RealMemWindow[BufPos - SLIDE] - &context->enc_RealMemWindow[0]);
+	history_avail = (int)(&context->enc_RealMemWindow[BufPos - SLIDE] - &context->enc_RealMemWindow[0]);
 #else
-	history_avail = (long)(&context->enc_MemWindow[BufPos] - &context->enc_RealMemWindow[0]);
+	history_avail = (int)(&context->enc_MemWindow[BufPos] - &context->enc_RealMemWindow[0]);
 #endif
 
 	if (history_needed <= history_avail)
@@ -1212,7 +1212,7 @@ static bool redo_first_block(t_encoder_context *context, long *bufpos_ptr)
 		0,
 		context->enc_literals,
 		context->enc_distances,
-		(ulong *)&split_at_literal,
+		(uint *)&split_at_literal,
 		NULL /* don't need # distances returned */
 	);
 
@@ -1231,7 +1231,7 @@ static bool redo_first_block(t_encoder_context *context, long *bufpos_ptr)
 	 * Now set all the tree root pointers to NULL
 	 * (don't need to reset the left/right pointers).
 	 */
-	memset(context->enc_tree_root, 0, NUM_SEARCH_TREES * sizeof(ulong));
+	memset(context->enc_tree_root, 0, NUM_SEARCH_TREES * sizeof(uint));
 #else
 	context->enc_single_tree_root = 0;
 #endif

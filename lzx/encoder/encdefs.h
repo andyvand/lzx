@@ -31,7 +31,7 @@
  * ushort's in optenc.c, so make sure they don't overflow
  * (e.g. outputting all LOOK bytes as 9 bit uncompressed
  * symbols, say).  If necessary, change the typedef in optenc.c
- * to ulong.
+ * to uint.
  */
 #define EXTRA_SIZE   4096
 #define LOOK		(EXTRA_SIZE-MAX_MATCH-2)
@@ -206,7 +206,7 @@
 /*
  * Number of elements in the main tree
  */
-#define MAIN_TREE_ELEMENTS			(NUM_CHARS+(((long) context->enc_num_position_slots) << NL_SHIFT))
+#define MAIN_TREE_ELEMENTS			(NUM_CHARS+(((int) context->enc_num_position_slots) << NL_SHIFT))
 
 
 /*

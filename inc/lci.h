@@ -34,6 +34,26 @@
 #endif
 #endif
 
+#if defined(_WIN16) || defined(WIN16) || defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)
+#if defined(DLL_EXPORTS)
+#define DLLEXPORT __declspec(dllexport)
+#elif defined(LIB_EXPORTS)
+#define DLLEXPORT
+#else
+#define DLLEXPORT __declspec(dllimport)
+#endif
+#elif defined(__GNUC__)
+#define DLLEXPORT __attribute__((visibility("default")))
+#else
+#define DLLEXPORT
+#endif
+
+#ifdef __GNUC__
+#define ALIGNED(X) __attribute__((aligned(X)))
+#else
+#define ALIGNED(X)
+#endif
+
 #ifndef _BYTE_DEFINED
 #define _BYTE_DEFINED
 typedef unsigned char  BYTE;
@@ -42,6 +62,7 @@ typedef unsigned char  BYTE;
 #ifndef _UINT_DEFINED
 #define _UINT_DEFINED
 typedef unsigned int  UINT;
+typedef unsigned int  uint;
 #endif
 
 #ifndef _ULONG_DEFINED
@@ -139,7 +160,7 @@ typedef void (FAR DIAMONDAPI *PFNFREE)(MI_MEMORY pv);          /* pfnmf */
  *      MCI_ERROR_NOT_ENOUGH_MEMORY, could not allocate enough memory.
  *      MCI_ERROR_BAD_PARAMETERS, something wrong with parameters.
  */
-int FAR DIAMONDAPI LCICreateCompression(
+DLLEXPORT int FAR DIAMONDAPI LCICreateCompression(
         UINT FAR *      pcbDataBlockMax,  /* max uncompressed data block size */
         void FAR *      pvConfiguration,  /* See LZXCONFIGURATION */
         PFNALLOC        pfnma,            /* Memory allocation function ptr */
@@ -149,8 +170,8 @@ int FAR DIAMONDAPI LCICreateCompression(
 		int FAR	(DIAMONDAPI *pfnlzx_output_callback)(
 			void *			pfol,
 			unsigned char *	compressed_data,
-			long			compressed_size,
-			long			uncompressed_size
+			int			compressed_size,
+			int			uncompressed_size
         ),
         void FAR *      fci_pv // not the same as the FCI client's pv
 );
@@ -174,13 +195,13 @@ int FAR DIAMONDAPI LCICreateCompression(
  *  Exit-Failure:
  *      MCI_ERROR_BAD_PARAMETERS, something wrong with parameters.
  */
-int FAR DIAMONDAPI LCICompress(
+DLLEXPORT int FAR DIAMONDAPI LCICompress(
         LCI_CONTEXT_HANDLE  hmc,         /* compression context */
         void FAR *          pbSrc,       /* source buffer */
         UINT                cbSrc,       /* source buffer size */
         void FAR *          pbDst,       /* target buffer */
         UINT                cbDst,       /* target buffer size */
-        ULONG FAR *         pcbResult);  /* gets target data size */
+        UINT FAR *          pcbResult);  /* gets target data size */
 
 
 /***    LCIResetCompression - Reset compression history (if any)
@@ -201,7 +222,7 @@ int FAR DIAMONDAPI LCICompress(
  *  Exit-Failure:
  *      Returns MCI_ERROR_BAD_PARAMETERS, invalid context handle.
  */
-int FAR DIAMONDAPI LCIResetCompression(LCI_CONTEXT_HANDLE hmc);
+DLLEXPORT int FAR DIAMONDAPI LCIResetCompression(LCI_CONTEXT_HANDLE hmc);
 
 
 /***    LCIDestroyCompression - Destroy LCI compression context
@@ -216,20 +237,20 @@ int FAR DIAMONDAPI LCIResetCompression(LCI_CONTEXT_HANDLE hmc);
  *  Exit-Failure:
  *      Returns MCI_ERROR_BAD_PARAMETERS, invalid context handle.
  */
-int FAR DIAMONDAPI LCIDestroyCompression(LCI_CONTEXT_HANDLE hmc);
+DLLEXPORT int FAR DIAMONDAPI LCIDestroyCompression(LCI_CONTEXT_HANDLE hmc);
 
 
 /*
  * Forces encoder to flush remaining output
  */
-int FAR DIAMONDAPI LCIFlushCompressorOutput(LCI_CONTEXT_HANDLE hmc);
+DLLEXPORT int FAR DIAMONDAPI LCIFlushCompressorOutput(LCI_CONTEXT_HANDLE hmc);
 
 
 /*
  * Set the file translation size
  * (this must be done immediately after a reset, or an LCICreateCompression)
  */
-int FAR DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned long size);
+DLLEXPORT int FAR DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned int size);
 
 
 /*
@@ -238,10 +259,10 @@ int FAR DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned long s
  * input_position is the offset of the data from the beginning of the file
  * bytes_available is the number of bytes available from that offset
  */
-unsigned char * FAR DIAMONDAPI LCIGetInputData(
+DLLEXPORT unsigned char * FAR DIAMONDAPI LCIGetInputData(
     LCI_CONTEXT_HANDLE hmc,
-    unsigned long *input_position,
-    unsigned long *bytes_available
+    unsigned int *input_position,
+    unsigned int *bytes_available
 );
 
 
@@ -266,14 +287,22 @@ unsigned char * FAR DIAMONDAPI LCIGetInputData(
  * tree contents around.
  */
 
+#ifdef _MSC_VER
+#ifdef BIT16
 #pragma pack (2)
+#else
+#pragma pack (4)
+#endif
+#endif
 
 typedef struct {
     int WindowSize;           // buffer size
     int SecondPartitionSize;
-} LZXCONFIGURATION; /* lcfg */
+} ALIGNED(4) LZXCONFIGURATION; /* lcfg */
 
+#ifdef _MSC_VER
 #pragma pack ()
+#endif
 
 typedef LZXCONFIGURATION *PLZXCONFIGURATION; /* plcfg */
 

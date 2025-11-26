@@ -12,11 +12,11 @@
 
 
 
-static void tally_aligned_bits(t_encoder_context *context, ulong dist_to_end_at)
+static void tally_aligned_bits(t_encoder_context *context, uint dist_to_end_at)
 {
-	ulong	*dist_ptr;
-	ulong	i;
-	ulong	match_pos;
+	uint	*dist_ptr;
+	uint	i;
+	uint	match_pos;
 
 	/*
      * Tally the lower 3 bits
@@ -40,11 +40,11 @@ static void tally_aligned_bits(t_encoder_context *context, ulong dist_to_end_at)
  * Determine whether it is advantageous to use aligned block
  * encoding on the block.
  */
-lzx_block_type get_aligned_stats(t_encoder_context *context, ulong dist_to_end_at)
+lzx_block_type get_aligned_stats(t_encoder_context *context, uint dist_to_end_at)
 {
 	byte		i;
-	ulong		total_L3 = 0;
-	ulong		largest_L3 = 0;
+	uint		total_L3 = 0;
+	uint		largest_L3 = 0;
 
 	memset(
 		context->enc_aligned_tree_freq, 
@@ -79,16 +79,16 @@ lzx_block_type get_aligned_stats(t_encoder_context *context, ulong dist_to_end_a
  * Calculates the frequency of each literal, and returns the total
  * number of uncompressed bytes compressed in the block.
  */
-static ulong tally_frequency(
-	t_encoder_context *context, 
-	ulong literal_to_start_at, 
-	ulong distance_to_start_at,
-	ulong literal_to_end_at
+static uint tally_frequency(
+	t_encoder_context *context,
+	uint literal_to_start_at,
+	uint distance_to_start_at,
+	uint literal_to_end_at
 )
 {
-	ulong   i;
-	ulong	d;
-	ulong   compressed_bytes = 0;
+	uint    i;
+	uint	d;
+	uint   compressed_bytes = 0;
 
 	d = distance_to_start_at;
 
@@ -125,11 +125,11 @@ static ulong tally_frequency(
 /*
  * Get statistics
  */
-ulong get_block_stats(
-	t_encoder_context *context, 
-	ulong literal_to_start_at, 
-	ulong distance_to_start_at,
-	ulong literal_to_end_at
+uint get_block_stats(
+	t_encoder_context *context,
+	uint literal_to_start_at,
+	uint distance_to_start_at,
+	uint literal_to_end_at
 )
 {
 	memset(
@@ -156,11 +156,11 @@ ulong get_block_stats(
 /*
  * Update cumulative statistics
  */
-ulong update_cumulative_block_stats(
-	t_encoder_context *context, 
-	ulong literal_to_start_at, 
-	ulong distance_to_start_at,
-	ulong literal_to_end_at
+uint update_cumulative_block_stats(
+	t_encoder_context *context,
+	uint literal_to_start_at,
+	uint distance_to_start_at,
+	uint literal_to_end_at
 )
 {
 	return tally_frequency(
@@ -232,7 +232,7 @@ ulong update_cumulative_block_stats(
 #define MIN_LITERALS_IN_BLOCK	4096
 
 
-static const long square_table[17] =
+static const int square_table[17] =
 {
 	0,1,4,9,16,25,36,49,64,81,100,121,144,169,196,225,256
 };
@@ -294,19 +294,19 @@ static const byte log2_table[256] =
 /*
  * Return the difference between two sets of matches/distances
  */
-static ulong return_difference(
-	t_encoder_context *context, 
-	ulong item_start1,
-	ulong item_start2,
-	ulong dist_at_1,
-	ulong dist_at_2,
-	ulong size
+static uint return_difference(
+	t_encoder_context *context,
+	uint item_start1,
+	uint item_start2,
+	uint dist_at_1,
+	uint dist_at_2,
+	uint size
 )
 {
 	ushort	freq1[800];
 	ushort	freq2[800];
-	ulong	i;
-	ulong	cum_diff;
+	uint	i;
+	uint	cum_diff;
 	int		element;
 
 	/*
@@ -357,20 +357,20 @@ static ulong return_difference(
 
 	cum_diff = 0;
 
-	for (i = 0; i < (ulong) MAIN_TREE_ELEMENTS; i++) 
+	for (i = 0; i < (uint) MAIN_TREE_ELEMENTS; i++)
 	{
-		ulong log2a, log2b, diff;
+		uint log2a, log2b, diff;
 
 #define log2(x) ((x) < 256 ? log2_table[(x)] : 8+log2_table[(x) >> 8])
 
-		log2a = (ulong) log2(freq1[i]);
-		log2b = (ulong) log2(freq2[i]);
+		log2a = (uint) log2(freq1[i]);
+		log2b = (uint) log2(freq2[i]);
 
 		/* diff = (log2a*log2a) - (log2b*log2b); */
 		diff = square_table[log2a] - square_table[log2b];
 
 #ifdef __APPLE__
-		cum_diff += (ulong)diff;
+		cum_diff += (uint)diff;
 #else
 		cum_diff += abs(diff);
 #endif
@@ -399,14 +399,14 @@ static ulong return_difference(
  */
 bool split_block(
 	t_encoder_context *context, 
-	ulong literal_to_start_at,
-	ulong literal_to_end_at,
-	ulong distance_to_end_at,	/* corresponds to # distances at literal_to_end_at */
-	ulong *split_at_literal,
-	ulong *split_at_distance	/* optional parameter (may be NULL) */
+	uint literal_to_start_at,
+	uint literal_to_end_at,
+	uint distance_to_end_at,	/* corresponds to # distances at literal_to_end_at */
+	uint *split_at_literal,
+	uint *split_at_distance	/* optional parameter (may be NULL) */
 )
 {
-	ulong	i, j, d;
+	uint	i, j, d;
 	int		nd;
 
 	/*
@@ -478,8 +478,8 @@ bool split_block(
 				context,
 				i,
 				i+1*RESOLUTION, 
-				(ulong) num_dist_at_item[i/STEP_SIZE], 
-				(ulong) num_dist_at_item[(i+1*RESOLUTION)/STEP_SIZE], 
+				(uint) num_dist_at_item[i/STEP_SIZE],
+				(uint) num_dist_at_item[(i+1*RESOLUTION)/STEP_SIZE],
 				RESOLUTION) > THRESHOLD
 			&& 
 			
@@ -487,8 +487,8 @@ bool split_block(
 				context,
 				i-RESOLUTION,   
 				i+2*RESOLUTION, 
-				(ulong) num_dist_at_item[(i-RESOLUTION)/STEP_SIZE], 
-				(ulong) num_dist_at_item[(i+2*RESOLUTION)/STEP_SIZE], 
+				(uint) num_dist_at_item[(i-RESOLUTION)/STEP_SIZE],
+				(uint) num_dist_at_item[(i+2*RESOLUTION)/STEP_SIZE],
 				RESOLUTION) > THRESHOLD
 			 
 			&& 
@@ -497,13 +497,13 @@ bool split_block(
 				context,
 				i-2*RESOLUTION, 
 				i+3*RESOLUTION, 
-				(ulong) num_dist_at_item[(i-2*RESOLUTION)/STEP_SIZE], 
-				(ulong) num_dist_at_item[(i+3*RESOLUTION)/STEP_SIZE], 
+				(uint) num_dist_at_item[(i-2*RESOLUTION)/STEP_SIZE],
+				(uint) num_dist_at_item[(i+3*RESOLUTION)/STEP_SIZE],
 				RESOLUTION) > THRESHOLD
 			)
 		{
-			ulong max_diff = 0;
-			ulong literal_split;
+			uint max_diff = 0;
+			uint literal_split;
 
 			/*
 			 * Narrow down the best place to split block
@@ -519,14 +519,14 @@ bool split_block(
 			 */
 			for (j = i+RESOLUTION/2; j<i+(5*RESOLUTION)/2; j += STEP_SIZE)
 			{
-				ulong	diff;
+				uint	diff;
 
 				diff = return_difference(
 					context,
 					j - RESOLUTION, 
 					j, 
-					(ulong) num_dist_at_item[(j-RESOLUTION)/STEP_SIZE], 
-					(ulong) num_dist_at_item[j/STEP_SIZE], 
+					(uint) num_dist_at_item[(j-RESOLUTION)/STEP_SIZE],
+					(uint) num_dist_at_item[j/STEP_SIZE], 
 					RESOLUTION
 				);
 

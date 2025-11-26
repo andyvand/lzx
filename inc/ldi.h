@@ -40,6 +40,26 @@
 #endif
 #endif
 
+#if defined(_WIN16) || defined(WIN16) || defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)
+#if defined(DLL_EXPORTS)
+#define DLLEXPORT __declspec(dllexport)
+#elif defined(LIB_EXPORTS)
+#define DLLEXPORT
+#else
+#define DLLEXPORT __declspec(dllimport)
+#endif
+#elif defined(__GNUC__)
+#define DLLEXPORT __attribute__((visibility("default")))
+#else
+#define DLLEXPORT
+#endif
+
+#ifdef __GNUC__
+#define ALIGNED(X) __attribute__((aligned(X)))
+#else
+#define ALIGNED(X)
+#endif
+
 #ifndef _BYTE_DEFINED
 #define _BYTE_DEFINED
 typedef unsigned char   BYTE;
@@ -55,14 +75,14 @@ typedef unsigned int    UINT;
 typedef unsigned int    uint;
 #endif
 
-#ifdef __GNUC__
-typedef long            INT_PTR;
-typedef unsigned long   UINT_PTR;
+#if defined(__GNUC__) && !defined(__MINGW32__)
+typedef int *           INT_PTR;
+typedef unsigned int *  UINT_PTR;
 #endif
 
 #ifndef NEAR
 #  ifdef BIT16
-#     define NEAR __near
+#     define NEAR __nearrm
 #  else
 #     define NEAR
 #  endif
@@ -278,7 +298,7 @@ typedef void (FAR DIAMONDAPI *PFNFREE)(MI_MEMORY pv);          /* pfnmf */
  *      MDI_ERROR_BAD_PARAMETERS, something wrong with parameters.
  *      *pcbDataBlockMax, *pcbSrcBufferMin, *pmdhHandle undefined.
  */
-int FAR DIAMONDAPI LDICreateDecompression(
+DLLEXPORT int FAR DIAMONDAPI LDICreateDecompression(
         UINT FAR *      pcbDataBlockMax,  /* max uncompressed data block size */
         void FAR *      pvConfiguration,  /* implementation-defined */
         PFNALLOC        pfnma,            /* Memory allocation function ptr */
@@ -323,7 +343,7 @@ int FAR DIAMONDAPI LDICreateDecompression(
  *      data block, then call LDIDecompress() with the address of your
  *      cbDecompressed.
  */
-int FAR DIAMONDAPI LDIDecompress(
+DLLEXPORT int FAR DIAMONDAPI LDIDecompress(
         LDI_CONTEXT_HANDLE  hmd,         /* decompression context */
         void FAR *          pbSrc,       /* source buffer */
         UINT                cbSrc,       /* source data size */
@@ -348,7 +368,7 @@ int FAR DIAMONDAPI LDIDecompress(
  *  Exit-Failure:
  *      Returns MDI_ERROR_BAD_PARAMETERS, invalid context handle.
  */
-int FAR DIAMONDAPI LDIResetDecompression(LDI_CONTEXT_HANDLE hmd);
+DLLEXPORT int FAR DIAMONDAPI LDIResetDecompression(LDI_CONTEXT_HANDLE hmd);
 
 
 /***    LDIDestroyDecompression - Destroy LDI decompression context
@@ -363,11 +383,11 @@ int FAR DIAMONDAPI LDIResetDecompression(LDI_CONTEXT_HANDLE hmd);
  *  Exit-Failure:
  *      Returns MDI_ERROR_BAD_PARAMETERS, invalid context handle.
  */
-int FAR DIAMONDAPI LDIDestroyDecompression(LDI_CONTEXT_HANDLE hmd);
+DLLEXPORT int FAR DIAMONDAPI LDIDestroyDecompression(LDI_CONTEXT_HANDLE hmd);
 
 
 #ifndef BIT16
-int FAR DIAMONDAPI LDIGetWindow(
+DLLEXPORT int FAR DIAMONDAPI LDIGetWindow(
         LDI_CONTEXT_HANDLE  hmd,            /* decompression context */
         BYTE FAR **         ppWindow,       /* pointer to window start */
         int *              pFileOffset,    /* offset in folder */
@@ -403,14 +423,18 @@ int FAR DIAMONDAPI LDIGetWindow(
  *  pvConfiguration points to this structure.
  */
 
+#ifdef _MSC_VER
 #pragma pack (1)
+#endif
 
 typedef struct {
     int	WindowSize;         /* buffersize */
     int	fCPUtype;           /* controls internal code selection */
-} LZXDECOMPRESS; /* qdec */
+} ALIGNED(1) LZXDECOMPRESS; /* qdec */
 
+#ifdef _MSC_VER
 #pragma pack ()
+#endif
 
 typedef LZXDECOMPRESS *PLZXDECOMPRESS; /* pldec */
 typedef LZXDECOMPRESS FAR *PFLZXDECOMPRESS; /* pfldec */

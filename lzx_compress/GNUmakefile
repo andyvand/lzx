@@ -13,16 +13,26 @@ INSTALL_DIR = /usr
 OBJS = \
     lzx_compress.o
 
-%.o: %.c
+DLL_OBJS = \
+    lzx_compress_dll.o
+
+%_dll.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-all: $(TARGETNAME).exe
+%.o: %.c
+	$(CC) $(CFLAGS) -DLIB_EXPORTS=1 -o $@ -c $<
+
+all: $(TARGETNAME).exe $(TARGETNAME)_dll.exe
+
+$(TARGETNAME)_dll.exe: $(DLL_OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ ../lzx/encoder/liblci.dll.a
 
 $(TARGETNAME).exe: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^ ../lzx/encoder/liblci.a
 
 clean:
-	$(RM) $(OBJS) $(TARGETNAME).exe
+	$(RM) $(OBJS) $(DLL_OBJS) $(TARGETNAME).exe $(TARGETNAME)_dll.exe
 
 install:
 	$(INSTALL) $(TARGETNAME).exe $(INSTALL_DIR)/bin/$(TARGETNAME).exe
+	$(INSTALL) $(TARGETNAME)_dll.exe $(INSTALL_DIR)/bin/$(TARGETNAME)_dll.exe

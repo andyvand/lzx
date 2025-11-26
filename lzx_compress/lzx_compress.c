@@ -38,7 +38,7 @@ typedef struct _LZXBOX_BLOCK {
 static
 MI_MEMORY 
 DIAMONDAPI LzxAlloc(
-    ULONG amount
+    UINT amount
     )
 {
     return(malloc((size_t)amount));
@@ -62,11 +62,11 @@ DIAMONDAPI
 CompressCallback(
     void *ptr,
     unsigned char* compressed_data,
-    long compressed_size,
-    long uncompressed_size
+    int compressed_size,
+    int uncompressed_size
     )
 {
-    ULONG BytesWritten;
+    UINT BytesWritten;
     LZXBOX_BLOCK Block;
 
     (void)ptr;
@@ -77,7 +77,7 @@ CompressCallback(
     Block.CompressedSize = (USHORT)compressed_size;
     Block.UncompressedSize = (USHORT)uncompressed_size;
 
-    if (!(BytesWritten = (ULONG)fwrite(&Block, 1, sizeof(Block), outFile))) {
+    if (!(BytesWritten = (UINT)fwrite(&Block, 1, sizeof(Block), outFile))) {
         fprintf(stderr, "Cannot write size to file\n");
         return -1;
     } else {
@@ -87,7 +87,7 @@ CompressCallback(
     //
     // write compressed data
     //
-    if (!(BytesWritten = (ULONG)fwrite(compressed_data, 1, Block.CompressedSize, outFile))) {
+    if (!(BytesWritten = (UINT)fwrite(compressed_data, 1, Block.CompressedSize, outFile))) {
         fprintf(stderr, "Cannot write data to file\n");
         return -1;
     } else {
@@ -108,10 +108,10 @@ BOOL CompressFile(
     PVOID Source = NULL;
     LZXCONFIGURATION cfg;
     UINT DestSize;
-    ULONG BytesRead;
-    ULONG BytesCompressed;
+    UINT BytesRead;
+    UINT BytesCompressed;
     int LCIRet;
-    ULONG BytesRemaining;
+    UINT BytesRemaining;
 
     //
     // initialize the compression engine

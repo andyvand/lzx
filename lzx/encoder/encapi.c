@@ -12,8 +12,8 @@ bool LZX_EncodeInit(
 
 	t_encoder_context *context,
 
-	long compression_window_size,
-	long second_partition_size,
+	int compression_window_size,
+	int second_partition_size,
 
 	PFNALLOC pfnma,
 	PFNFREE pfnmf,
@@ -21,8 +21,8 @@ bool LZX_EncodeInit(
 	int FAR (DIAMONDAPI *pfnlzx_output_callback)(
 			void *			pfol,
 			unsigned char *	compressed_data,
-			long			compressed_size,
-			long			uncompressed_size
+			int 			compressed_size,
+			int 			uncompressed_size
     ),
 
     void *fci_data
@@ -99,12 +99,12 @@ void LZX_EncodeNewGroup(t_encoder_context *context)
 }
 
 
-long LZX_Encode(
-	t_encoder_context *context,	
+int LZX_Encode(
+	t_encoder_context *context,
 	byte *input_data,
-	long input_size,
-	long *estimated_bytes_compressed,
-	long file_size_for_translation
+	int input_size,
+	int *estimated_bytes_compressed,
+	int file_size_for_translation
 )
 {
 	context->enc_input_ptr	= input_data;
@@ -140,11 +140,11 @@ bool LZX_EncodeFlush(t_encoder_context *context)
 
 unsigned char *LZX_GetInputData(
     t_encoder_context *context,
-    unsigned long *input_position,
-    unsigned long *bytes_available
+    unsigned int *input_position,
+    unsigned int *bytes_available
 )
 {
-    unsigned long filepos;
+    unsigned int filepos;
 
     // note that BufPos-window_size is the real position in the file
     filepos = context->enc_BufPos - context->enc_window_size;

@@ -37,9 +37,9 @@ typedef unsigned short	USHORT;
 typedef unsigned long	ULONG;
 typedef unsigned int    UINT;
 
-#ifdef __APPLE__
-typedef long            INT_PTR;
-typedef unsigned long   UINT_PTR;
+#if defined(__GNUC__) && !defined(__MINGW32__)
+typedef int *           INT_PTR;
+typedef unsigned int *  UINT_PTR;
 #endif
 
 #ifdef BIT16

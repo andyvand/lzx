@@ -12,20 +12,20 @@
  */
 static void do_block_output(
 	t_encoder_context *context,
-	long literal_to_end_at,
-	long distance_to_end_at
+	int literal_to_end_at,
+	int distance_to_end_at
 );
 
 
 static void do_block_output(
 	t_encoder_context *context,
-	long literal_to_end_at,
-	long distance_to_end_at
+	int literal_to_end_at,
+	int distance_to_end_at
 )
 {
-	ulong			bytes_compressed;
+	uint			bytes_compressed;
 	lzx_block_type	block_type;
-	ulong			estimated_block_size;
+	uint			estimated_block_size;
 
 	/*
 	 * Calculate frequencies for all tree elements.
@@ -95,10 +95,10 @@ static void do_block_output(
  * Returns the number of distances which correspond
  * to this number of literals
  */
-ulong get_distances_from_literals(t_encoder_context *context, ulong literals)
+uint get_distances_from_literals(t_encoder_context *context, uint literals)
 {
-	ulong	d = 0;
-	ulong	i;
+	uint	d = 0;
+	uint	i;
 
 	for (i = 0; i < (literals >> 3); i++)
 		d += context->enc_ones[ context->enc_ItemType[i] ];
@@ -123,8 +123,8 @@ ulong get_distances_from_literals(t_encoder_context *context, ulong literals)
  */
 void output_block(t_encoder_context *context)
 {
-	ulong	where_to_split;
-	ulong	distances;
+	uint	where_to_split;
+	uint	distances;
 
     //
     // We have now output a block.
@@ -183,7 +183,7 @@ void output_block(t_encoder_context *context)
 		memmove(    //purify
 			&context->enc_DistData[0],
 			&context->enc_DistData[distances],
-			sizeof(ulong)*(context->enc_distances-distances)
+			sizeof(uint)*(context->enc_distances-distances)
 		);
 
 		context->enc_literals  -= where_to_split;
@@ -211,9 +211,9 @@ void flush_output_bit_buffer(t_encoder_context *context)
  * Estimate how much it would take to output the compressed
  * data left in the buffer
  */
-long estimate_buffer_contents(t_encoder_context *context)
+int estimate_buffer_contents(t_encoder_context *context)
 {
-	long			estimated_block_size;
+	int			estimated_block_size;
 
 	/*
 	 * Use frequency data sitting around from last tree creation

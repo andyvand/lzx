@@ -2,7 +2,7 @@ TARGETNAME=ldi
 TARGETPATH=../../lib
 TARGETTYPE=LIBRARY
 CC = i686-pc-mingw32-gcc
-DLLWRAP = i686-pc-mingw32-dllwrap
+DLLTOOL = i686-pc-mingw32-dlltool
 AR = i686-pc-mingw32-ar
 RANLIB = i686-pc-mingw32-ranlib
 CFLAGS = -DUSE_NOLIBS=1 -O2 -I../../inc
@@ -24,20 +24,37 @@ OBJS = \
     decapi.o \
     ldi.o
 
+DLL_OBJS = \
+    decverb_dll.o \
+    decalign_dll.o \
+    maketbl_dll.o \
+    dectree_dll.o \
+    decxlat_dll.o \
+    decin_dll.o \
+    decuncmp_dll.o \
+    decblk_dll.o \
+    decout_dll.o \
+    decinit_dll.o \
+    decapi_dll.o \
+    ldi_dll.o
+
+%_dll.o: %.c
+	$(CC) $(CFLAGS) -DDLL_EXPORTS=1 -o $@ -c $<
+
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -DLIB_EXPORTS=1 -o $@ -c $<
 
 all: $(TARGETNAME).dll lib$(TARGETNAME).a
 
-$(TARGETNAME).dll: $(OBJS)
-	$(DLLWRAP) --output-def $(TARGETNAME).def --implib lib$(TARGETNAME).dll.a -o $@ $^
+$(TARGETNAME).dll: $(DLL_OBJS)
+	$(CC) -mdll -o $@ -Wl,--out-implib,libldi.dll.a $^
 
 lib$(TARGETNAME).a: $(OBJS)
 	$(AR) cru $@ $^
 	$(RANLIB) $@
 
 clean:
-	$(RM) $(OBJS) $(TARGETNAME).dll $(TARGETNAME).def lib$(TARGETNAME).dll.a lib$(TARGETNAME).a
+	$(RM) $(OBJS) $(DLL_OBJS) $(TARGETNAME).dll lib$(TARGETNAME).dll.a lib$(TARGETNAME).a
 
 install:
 	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h

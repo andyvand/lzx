@@ -17,12 +17,12 @@
 #define OUTPUT_EXTRA_BYTES 64
 
 
-static void encoder_translate_e8(t_encoder_context *context, byte *mem, long bytes);
+static void encoder_translate_e8(t_encoder_context *context, byte *mem, int bytes);
 
 
-void output_bits(t_encoder_context *context, int n, ulong x)
+void output_bits(t_encoder_context *context, int n, uint x)
 {
-	context->enc_bitbuf |= (((ulong) x) << (context->enc_bitcount - n));
+	context->enc_bitbuf |= (((uint) x) << (context->enc_bitcount - n));
 	context->enc_bitcount -= (char)n;
 
 	while (context->enc_bitcount <= 16)
@@ -75,7 +75,7 @@ void reset_translation(t_encoder_context *context)
 }
 
 
-static long read_input_data(t_encoder_context *context, byte *mem, long amount)
+static int read_input_data(t_encoder_context *context, byte *mem, int amount)
 {
 	if (amount <= context->enc_input_left)
 	{
@@ -87,7 +87,7 @@ static long read_input_data(t_encoder_context *context, byte *mem, long amount)
 	}
 	else
 	{
-		long bytes_read;
+		int bytes_read;
 
 		if (context->enc_input_left <= 0)
 			return 0;
@@ -103,9 +103,9 @@ static long read_input_data(t_encoder_context *context, byte *mem, long amount)
 }
 
 
-long comp_read_input(t_encoder_context *context, ulong BufPos, long Size)
+int comp_read_input(t_encoder_context *context, uint BufPos, int Size)
 {
-	long    bytes_read;
+	int    bytes_read;
 
 	if (Size <= 0)
 		return 0;
@@ -141,11 +141,11 @@ long comp_read_input(t_encoder_context *context, ulong BufPos, long Size)
 }
 
 
-static void encoder_translate_e8(t_encoder_context *context, byte *mem, long bytes)
+static void encoder_translate_e8(t_encoder_context *context, byte *mem, int bytes)
 {
-	long    offset;
-	long    absolute;
-	ulong   end_instr_pos;
+	int     offset;
+	int     absolute;
+	uint    end_instr_pos;
 	byte    temp[6];
 	byte    *mem_backup;
 
@@ -178,14 +178,14 @@ static void encoder_translate_e8(t_encoder_context *context, byte *mem, long byt
 		if (context->enc_instr_pos >= end_instr_pos)
 			break;
 
-#if defined(_X86_)
-	offset = *(long *) mem;
+#if defined(_X86_) || defined(_M_IX86) || defined(_M_ARM) || defined(_M_AMD64) || defined(_M_ARM64) || defined(__i386__) || defined(__arm64__) || defined(__arm__) || defined(__x86_64__)
+        offset = *(int *) mem;
 #else
-		offset   = (long) (
-						((ulong)  mem[0])               |
-						(((ulong) mem[1])<<8)   |
-						(((ulong) mem[2])<<16)  |
-						(((ulong) mem[3])<<24)
+		offset   = (int) (
+						((uint)  mem[0])               |
+						(((uint) mem[1])<<8)   |
+						(((uint) mem[2])<<16)  |
+						(((uint) mem[3])<<24)
 						);
 #endif
 
@@ -193,18 +193,18 @@ static void encoder_translate_e8(t_encoder_context *context, byte *mem, long byt
 
 	if (absolute >= 0)
 		{
-			if ((ulong) absolute < context->enc_file_size_for_translation+context->enc_instr_pos)
+			if ((uint) absolute < context->enc_file_size_for_translation+context->enc_instr_pos)
 			{
-				if ((ulong) absolute >= context->enc_file_size_for_translation)
+				if ((uint) absolute >= context->enc_file_size_for_translation)
 					absolute = offset - context->enc_file_size_for_translation;
 
-#if defined(_X86_)
-				*(ulong *) mem = (ulong) absolute;
+#if defined(_X86_) || defined(_M_IX86) || defined(_M_ARM) || defined(_M_AMD64) || defined(_M_ARM64) || defined(__i386__) || defined(__arm64__) || defined(__arm__) || defined(__x86_64__)
+				*(uint *) mem = (uint) absolute;
 #else
-				mem[0] = (byte) ((ulong) absolute & 255);
-				mem[1] = (byte) (( ((ulong) absolute) >> 8) & 255);
-				mem[2] = (byte) (( ((ulong) absolute) >> 16) & 255);
-				mem[3] = (byte) (( ((ulong) absolute) >> 24) & 255);
+				mem[0] = (byte) ((uint) absolute & 255);
+				mem[1] = (byte) (( ((uint) absolute) >> 8) & 255);
+				mem[2] = (byte) (( ((uint) absolute) >> 16) & 255);
+				mem[3] = (byte) (( ((uint) absolute) >> 24) & 255);
 #endif
 			}
 		}

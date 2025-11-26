@@ -61,12 +61,12 @@ _ASSERTE (context->enc_MemWindow[BufPos+1] == context->enc_MemWindow[ptr+1]);
  */
 
 #ifndef ASM_BSEARCH_FINDMATCH
-long binary_search_findmatch(t_encoder_context *context, long BufPos)
+int binary_search_findmatch(t_encoder_context *context, int BufPos)
 {
-	ulong       ptr;
-	ulong       a, b;
-	ulong       *small_ptr, *big_ptr;
-	ulong       end_pos;
+	uint        ptr;
+	uint        a, b;
+	uint        *small_ptr, *big_ptr;
+	uint        end_pos;
 	int         val; /* must be signed */
 	int         bytes_to_boundary;
 	int         clen;
@@ -414,7 +414,7 @@ quick_return:
 			match_length = 0;
 	}
 
-	return (long) match_length;
+	return (int) match_length;
 }
 #endif
 
@@ -428,11 +428,11 @@ quick_return:
  * Similar to the above function.
  */
 #ifndef ASM_QUICK_INSERT_BSEARCH_FINDMATCH
-void quick_insert_bsearch_findmatch(t_encoder_context *context, long BufPos, long end_pos)
+void quick_insert_bsearch_findmatch(t_encoder_context *context, int BufPos, int end_pos)
 {
-	long        ptr;
-	ulong       a,b;
-	ulong       *small_ptr, *big_ptr;
+	int         ptr;
+	uint        a,b;
+	uint        *small_ptr, *big_ptr;
 	int         val;
 	int         small_len, big_len;
 	int         same;
@@ -511,7 +511,7 @@ void quick_insert_bsearch_findmatch(t_encoder_context *context, long BufPos, lon
 
 	do
 	{
-		_ASSERTE ((ulong) ptr >= (ulong) (context->enc_RealLeft - context->enc_Left));
+		_ASSERTE ((uint) ptr >= (uint) (context->enc_RealLeft - context->enc_Left));
 
 		same = clen;
 
@@ -608,12 +608,12 @@ void quick_insert_bsearch_findmatch(t_encoder_context *context, long BufPos, lon
  * would cause problems if it remained in the tree, so we have to
  * remove it).
  */
-void binary_search_remove_node(t_encoder_context *context, long BufPos, ulong end_pos)
+void binary_search_remove_node(t_encoder_context *context, int BufPos, uint end_pos)
 {
-	ulong   ptr;
-	ulong   left_node_pos;
-	ulong   right_node_pos;
-	ulong   *link;
+	uint   ptr;
+	uint   left_node_pos;
+	uint   right_node_pos;
+	uint   *link;
 #ifdef MULTIPLE_SEARCH_TREES
 	ushort  tree_to_use;
 
@@ -650,7 +650,7 @@ void binary_search_remove_node(t_encoder_context *context, long BufPos, ulong en
 	 * If we never inserted this string, do not attempt to remove it
 	 */
 
-	if (context->enc_tree_root[tree_to_use] != (ulong) BufPos)
+	if (context->enc_tree_root[tree_to_use] != (uint) BufPos)
     {
 #ifdef __BOUNDSCHECKER__
         if (fReenable)
@@ -672,7 +672,7 @@ void binary_search_remove_node(t_encoder_context *context, long BufPos, ulong en
 #endif
 
 #else
-	if (context->enc_single_tree_root != (ulong) BufPos)
+	if (context->enc_single_tree_root != (uint) BufPos)
 		return;
 
 	link = &context->enc_single_tree_root;
@@ -732,8 +732,8 @@ void binary_search_remove_node(t_encoder_context *context, long BufPos, ulong en
 	while (1)
 	{
 #ifdef VERIFY_SEARCHES
-		_ASSERTE (left_node_pos < (ulong) BufPos);
-		_ASSERTE (right_node_pos < (ulong) BufPos);
+		_ASSERTE (left_node_pos < (uint) BufPos);
+		_ASSERTE (right_node_pos < (uint) BufPos);
 #endif
 
 		/*

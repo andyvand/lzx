@@ -16,7 +16,7 @@
  */
 #define OUTPUT_BITS(N,X) \
 { \
-   context->enc_bitbuf |= (((ulong) (X)) << (context->enc_bitcount-(N))); \
+   context->enc_bitbuf |= (((uint) (X)) << (context->enc_bitcount-(N))); \
    context->enc_bitcount -= (N);				  \
    while (context->enc_bitcount <= 16)            \
    {                                              \
@@ -45,10 +45,10 @@
  * to take the initial state of the three offsets at the beginning
  * of the block, and evolve them to the end of the block.
  */
-void get_final_repeated_offset_states(t_encoder_context *context, ulong distances)
+void get_final_repeated_offset_states(t_encoder_context *context, uint distances)
 {
-	ulong			MatchPos;
-	signed long		d; /* must be signed */
+	uint			MatchPos;
+	signed int		d; /* must be signed */
 	byte			consecutive;
 
 	consecutive = 0;
@@ -83,7 +83,7 @@ void get_final_repeated_offset_states(t_encoder_context *context, ulong distance
 		d = 0;
 	}
 
-	for (; d < (signed long) distances; d++)
+	for (; d < (signed int) distances; d++)
 	{
 		MatchPos = context->enc_DistData[d];
 
@@ -92,7 +92,7 @@ void get_final_repeated_offset_states(t_encoder_context *context, ulong distance
 		}
 		else if (MatchPos <= 2)
 		{
-			ulong	temp;
+			uint	temp;
 
 			temp = context->enc_repeated_offset_at_literal_zero[MatchPos];
 			context->enc_repeated_offset_at_literal_zero[MatchPos] = context->enc_repeated_offset_at_literal_zero[0];
@@ -124,12 +124,12 @@ void get_final_repeated_offset_states(t_encoder_context *context, ulong distance
  * decoding the uncompressed data - we store these in this
  * block.
  */
-void encode_uncompressed_block(t_encoder_context *context, ulong bufpos, ulong block_size)
+void encode_uncompressed_block(t_encoder_context *context, uint bufpos, uint block_size)
 {
     int     i;
     int     j;
     bool    block_size_odd;
-    ulong   val;
+    uint    val;
 
     /*
      * Align on a byte boundary
@@ -145,7 +145,7 @@ void encode_uncompressed_block(t_encoder_context *context, ulong bufpos, ulong b
     {
         val = context->enc_repeated_offset_at_literal_zero[i];
 
-        for (j = 0; j < sizeof(long); j++)
+        for (j = 0; j < sizeof(int); j++)
         {
             *context->enc_output_buffer_curpos++ = (byte) val;
             val >>= 8;
@@ -192,10 +192,10 @@ void encode_uncompressed_block(t_encoder_context *context, ulong bufpos, ulong b
 /*
  * Estimate the size of the data in the buffer, in bytes
  */
-ulong estimate_compressed_block_size(t_encoder_context *context)
+uint estimate_compressed_block_size(t_encoder_context *context)
 {
-	ulong			block_size = 0; /* output size in bits */
-	ulong			i;
+	uint			block_size = 0; /* output size in bits */
+	uint			i;
 	byte			mpslot;
 
 	/* Estimation of tree size */
@@ -208,7 +208,7 @@ ulong estimate_compressed_block_size(t_encoder_context *context)
 	/* Tally bits to output matches */
 	for (mpslot = 0; mpslot < context->enc_num_position_slots; mpslot++)
 	{
-		long	element;
+		int 	element;
 		int		primary;
 
 		element = NUM_CHARS + (mpslot << NL_SHIFT);
@@ -233,11 +233,11 @@ ulong estimate_compressed_block_size(t_encoder_context *context)
  * Encode block with NO special encoding of the lower 3
  * position bits
  */
-void encode_verbatim_block(t_encoder_context *context, ulong literal_to_end_at)
+void encode_verbatim_block(t_encoder_context *context, uint literal_to_end_at)
 {
-	ulong           MatchPos;
-	ulong			d = 0;
-	ulong			l = 0;
+	uint            MatchPos;
+	uint			d = 0;
+	uint			l = 0;
 	byte            MatchLength;
 	byte            c;
 	byte            mpSlot;
@@ -305,15 +305,15 @@ void encode_verbatim_block(t_encoder_context *context, ulong literal_to_end_at)
 /*
  * aligned block encoding
  */
-void encode_aligned_block(t_encoder_context *context, ulong literal_to_end_at)
+void encode_aligned_block(t_encoder_context *context, uint literal_to_end_at)
 {
-	ulong	MatchPos;
+	uint	MatchPos;
 	byte	MatchLength;
 	byte	c;
 	byte	mpSlot;
 	byte	Lower;
-	ulong	l = 0;
-	ulong	d = 0;
+	uint	l = 0;
+	uint	d = 0;
 
 	while (l < literal_to_end_at)
 	{
@@ -394,7 +394,7 @@ void encode_aligned_block(t_encoder_context *context, ulong literal_to_end_at)
 
 void perform_flush_output_callback(t_encoder_context *context)
 {
-	long	output_size;
+	int	output_size;
 
     /*
      * Do this only if there is any input to account for, so we don't
@@ -404,14 +404,14 @@ void perform_flush_output_callback(t_encoder_context *context)
     {
         flush_output_bit_buffer(context);
 
-        output_size = (long)(context->enc_output_buffer_curpos - context->enc_output_buffer_start);
+        output_size = (int)(context->enc_output_buffer_curpos - context->enc_output_buffer_start);
 
         if (output_size > 0)
         {
             (*context->enc_output_callback_function)(
                 context->enc_fci_data,
                 context->enc_output_buffer_start,
-                (long)(context->enc_output_buffer_curpos - context->enc_output_buffer_start),
+                (int)(context->enc_output_buffer_curpos - context->enc_output_buffer_start),
                 context->enc_input_running_total
             );
         }

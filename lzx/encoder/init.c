@@ -115,7 +115,7 @@ void init_compression_memory(t_encoder_context *context)
  */
 bool comp_alloc_compress_memory(t_encoder_context *context)
 {
-	ulong	pos_start;
+	uint	pos_start;
 
 #ifdef MULTIPLE_SEARCH_TREES
 	context->enc_tree_root		= NULL;
@@ -148,7 +148,7 @@ bool comp_alloc_compress_memory(t_encoder_context *context)
 	}
 
 #ifdef MULTIPLE_SEARCH_TREES
-	context->enc_tree_root = (ulong *) context->enc_malloc(
+	context->enc_tree_root = (uint *) context->enc_malloc(
 		sizeof(context->enc_tree_root[0]) * NUM_SEARCH_TREES
 	);
 
@@ -159,8 +159,8 @@ bool comp_alloc_compress_memory(t_encoder_context *context)
 	}
 #endif
 
-	context->enc_RealLeft = (ulong *) context->enc_malloc(
-   		sizeof(ulong) * MEM_WINDOW_ALLOC_SIZE
+	context->enc_RealLeft = (uint *) context->enc_malloc(
+   		sizeof(uint) * MEM_WINDOW_ALLOC_SIZE
 	);
 
 	if (context->enc_RealLeft == NULL)
@@ -169,8 +169,8 @@ bool comp_alloc_compress_memory(t_encoder_context *context)
 		return false;
 	}
 
-	context->enc_RealRight = (ulong *) context->enc_malloc(
-   		sizeof(ulong) * MEM_WINDOW_ALLOC_SIZE
+	context->enc_RealRight = (uint *) context->enc_malloc(
+   		sizeof(uint) * MEM_WINDOW_ALLOC_SIZE
 	);
 	
 	if (context->enc_RealRight == NULL)
@@ -197,7 +197,7 @@ bool comp_alloc_compress_memory(t_encoder_context *context)
 		return false;
 	}
 
-	context->enc_DistData = (ulong *) context->enc_malloc(MAX_DIST_ITEMS * sizeof(*context->enc_DistData));
+	context->enc_DistData = (uint *) context->enc_malloc(MAX_DIST_ITEMS * sizeof(*context->enc_DistData));
 
 	if (context->enc_DistData == NULL)
 	{

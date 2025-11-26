@@ -35,7 +35,7 @@
 
 /* --- LCI context structure ---------------------------------------------- */
 
-typedef ULONG SIGNATURE;    /* structure signature */
+typedef UINT SIGNATURE;    /* structure signature */
 
 struct LCI_CONTEXT          /* private structure */
 {
@@ -43,7 +43,7 @@ struct LCI_CONTEXT          /* private structure */
     PFNALLOC pfnAlloc;      /* memory alloc function */
     PFNFREE pfnFree;        /* memory free function */
     UINT cbDataBlockMax;    /* promised max data size */
-    unsigned long file_translation_size;
+    unsigned int file_translation_size;
 	t_encoder_context *encoder_context;
 };
 
@@ -65,8 +65,8 @@ int DIAMONDAPI LCICreateCompression(
 		int FAR (DIAMONDAPI *pfnlzx_output_callback)(
 			void *			pfol,
 			unsigned char *	compressed_data,
-			long			compressed_size,
-			long			uncompressed_size
+			int 			compressed_size,
+			int 			uncompressed_size
         ),
        void FAR *      fci_data
 )
@@ -137,10 +137,10 @@ int DIAMONDAPI LCICompress(
         UINT                cbSrc,          /* source actual size */
         void FAR *          pbDst,          /* target buffer */
         UINT                cbDst,          /* size of target buffer */
-        ULONG *             pcbResult)      /* gets target actual size */
+        UINT *              pcbResult)      /* gets target actual size */
 {
     PMCC_CONTEXT context;                   /* pointer to the context */
-	long	estimated_leftover_bytes;
+	int	estimated_leftover_bytes;
 
     context = PMCCfromHMC(hmc);             /* get pointer from handle */
 
@@ -238,7 +238,7 @@ int DIAMONDAPI LCIDestroyCompression(LCI_CONTEXT_HANDLE hmc)
 }
 
 
-int DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned long size)
+int DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned int size)
 {
     PMCC_CONTEXT context;                   /* pointer to context */
 
@@ -256,8 +256,8 @@ int DIAMONDAPI LCISetTranslationSize(LCI_CONTEXT_HANDLE hmc, unsigned long size)
 
 unsigned char * FAR DIAMONDAPI LCIGetInputData(
     LCI_CONTEXT_HANDLE hmc,
-    unsigned long *input_position,
-    unsigned long *bytes_available
+    unsigned int *input_position,
+    unsigned int *bytes_available
 )
 {
     PMCC_CONTEXT context;                   /* pointer to context */

@@ -67,7 +67,7 @@
 
 #ifdef STRICT_POINTERS
 /* SLIDE = how far the window has moved so far */
-#define SLIDE (((ulong) (context->enc_RealMemWindow)) - ((ulong) (context->enc_MemWindow)))
+#define SLIDE (((uint) (context->enc_RealMemWindow)) - ((uint) (context->enc_MemWindow)))
 #endif
 
 #ifndef min

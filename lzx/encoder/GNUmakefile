@@ -2,7 +2,7 @@ TARGETNAME=lci
 TARGETPATH=../../lib
 TARGETTYPE=LIBRARY
 CC = i686-pc-mingw32-gcc
-DLLWRAP = i686-pc-mingw32-dllwrap
+DLLTOOL = i686-pc-mingw32-dlltool
 AR = i686-pc-mingw32-ar
 RANLIB = i686-pc-mingw32-ranlib
 CFLAGS = -DMULTIPLE_SEARCH_TREES=1 -O2 -I../../inc
@@ -24,20 +24,37 @@ OBJS = \
     init.o \
     encapi.o
 
+DLL_OBJS = \
+    bsearch_dll.o \
+    optenc_dll.o \
+    encstats_dll.o \
+    tree_dll.o \
+    encdata_dll.o \
+    enctree_dll.o \
+    block_dll.o \
+    blkinit_dll.o \
+    io_dll.o \
+    lci_dll.o \
+    init_dll.o \
+    encapi_dll.o
+
+%_dll.o: %.c
+	$(CC) $(CFLAGS) -DDLL_EXPORTS=1 -o $@ -c $<
+
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -DLIB_EXPORTS=1 -o $@ -c $<
 
 all: $(TARGETNAME).dll lib$(TARGETNAME).a
 
-$(TARGETNAME).dll: $(OBJS)
-	$(DLLWRAP) --output-def $(TARGETNAME).def --implib lib$(TARGETNAME).dll.a -o $@ $^
+$(TARGETNAME).dll: $(DLL_OBJS)
+	$(CC) -mdll -o $@ -Wl,--out-implib,lib$(TARGETNAME).dll.a $^
 
 lib$(TARGETNAME).a: $(OBJS)
 	$(AR) cru $@ $^
 	$(RANLIB) $@
 
 clean:
-	$(RM) $(OBJS) $(TARGETNAME).dll $(TARGETNAME).def lib$(TARGETNAME).dll.a lib$(TARGETNAME).a
+	$(RM) $(OBJS) $(DLL_OBJS) $(TARGETNAME).dll lib$(TARGETNAME).dll.a lib$(TARGETNAME).a
 
 install:
 	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h

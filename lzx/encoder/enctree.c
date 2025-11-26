@@ -205,7 +205,7 @@ void fix_tree_cost_estimates(t_encoder_context *context)
      *  than MAX_LENGTH_TWO_OFFSET to a large number, so that the
      *  optimal parser will never select such matches.
 	 */
-	ulong  i;
+	uint  i;
 
 	/* Set zero lengths to some value */
 	for (i = 0; i< NUM_CHARS; i++)
@@ -232,7 +232,7 @@ void fix_tree_cost_estimates(t_encoder_context *context)
 
 void prevent_far_matches(t_encoder_context *context)
 {
-    ulong i;
+    uint i;
 
     /*
      * Set far match length 2's to a high value so they will never
