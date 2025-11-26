@@ -37,7 +37,7 @@ lib$(TARGETNAME).a: $(OBJS)
 	$(RANLIB) $@
 
 clean:
-	$(RM) $(OBJS) $(TARGETNAME).dylib lib$(TARGETNAME).a
+	$(RM) $(OBJS) lib$(TARGETNAME).dylib lib$(TARGETNAME).a
 
 install:
 	$(INSTALL) ../../inc/ldi.h $(INSTALL_DIR)/include/ldi.h
