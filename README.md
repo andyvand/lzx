@@ -15,7 +15,7 @@ Microsoft LZX library for Windows, Linux and macOS
 - make -f GNUmakefile
 - make -f GNUmakefile install
 
-# Build on Linux (GCC)
+# Build on Linux/FreeBSD (GCC)
 - cd lzx/decoder
 - make -f GNUmakefile.linux
 - sudo make -f GNUmakefile.linux install
