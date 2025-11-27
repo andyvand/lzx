@@ -1,5 +1,5 @@
 # lzx
-Microsoft LZX library for Windows, Linux and macOS
+Microsoft LZX library for Windows, Linux, FreeBSD and macOS
 
 # Build on Windows (MinGW)
 - cd lzx/decoder
