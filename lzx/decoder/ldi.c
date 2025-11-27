@@ -58,8 +58,13 @@ typedef struct LDI_CONTEXT FAR *PMDC_CONTEXT;     /* a pointer to one */
 
 /* --- LDI context structure ---------------------------------------------- */
 
+#ifdef _WIN64
+#define PMDCfromHMD(h) ((PMDC_CONTEXT)((unsigned long long)h))          /* handle to pointer */
+#define HMDfromPMDC(p) ((LDI_CONTEXT_HANDLE)((unsigned long long)p))    /* pointer to handle */
+#else
 #define PMDCfromHMD(h) ((PMDC_CONTEXT)h)          /* handle to pointer */
 #define HMDfromPMDC(p) ((LDI_CONTEXT_HANDLE)(p))    /* pointer to handle */
+#endif
 
 /* --- LDICreateDecompression() ------------------------------------------- */
 #include <stdio.h>

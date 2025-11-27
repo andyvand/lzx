@@ -22,12 +22,9 @@ typedef unsigned short	ushort;
 typedef unsigned long	ulong;
 typedef unsigned int    uint;
 
-typedef enum
-{
-	false = 0,
-	true = 1
-} bool;
-
+#define bool int
+#define false 0
+#define true 1
 
 /*
  * Definitions for Diamond/CAB memory allocation

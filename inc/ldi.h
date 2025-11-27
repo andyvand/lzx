@@ -114,7 +114,7 @@ typedef void HUGE *  MI_MEMORY;
 #if defined(_WIN64) && defined(_MSC_VER)
 typedef unsigned __int64 MHANDLE;
 #elif defined(_WIN64)
-typedef unsigned long long MMHANDLE
+typedef unsigned long long MHANDLE;
 #else
 typedef unsigned long MHANDLE;
 #endif
